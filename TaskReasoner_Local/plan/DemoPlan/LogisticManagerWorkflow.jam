@@ -1,0 +1,159 @@
+PREFIXES:
+	PREFIX arbi: <http://www.arbi.com//ontologies#>;
+	PREFIX isro: <http://www.arbi.com//BuiltInPlan#>;		
+	
+PLAN ACHIEVE ThrowWorkflow($serviceName, $taskType) {
+	ID : "LogisticManagerWorkflow1"
+	PRECONDITION :
+		$serviceName == "LogisticManager";
+		FACT PersonCall($callID, $location, $taskType);
+	BODY :
+		PERFORM ThrowGoal("CargoStoringPreparedRequestedTo");
+		PERFORM WaitGoalComplete("CargoStoringPreparedReportedFrom");
+		PERFORM FinalizeService($serviceName, $taskType);
+		
+	UTILITY : 1;
+}
+
+PLAN ACHIEVE ThrowWorkflow($serviceName, $taskType) {
+	ID : "LogisticManagerWorkflow2"
+	PRECONDITION :
+		$serviceName == "LogisticManager";
+		FACT PersonCall($callID, $location, $cmd);
+	BODY :
+		PERFORM ThrowGoal("StoredCargoRequestedTo");
+		PERFORM WaitGoalComplete("StoredCargoReportedFrom");
+		PERFORM FinalizeService($serviceName, $taskType);
+		
+	UTILITY : 1;
+}
+
+PLAN ACHIEVE ThrowWorkflow($serviceName, $taskType) {
+	ID : "LogisticManagerWorkflow3"
+	PRECONDITION :
+		$serviceName == "LogisticManager";
+		FACT PersonCall($callID, $location, $taskType);
+	BODY :
+		PERFORM ThrowGoal("UnstoredCargoRequestedTo");
+		PERFORM WaitGoalComplete("UnstoredCargoReportedFrom");
+		PERFORM FinalizeService($serviceName, $taskType);
+		
+	UTILITY : 1;
+}
+
+PLAN ACHIEVE ThrowWorkflow($serviceName, $taskType) {
+	ID : "LogisticManagerWorkflow4"
+	PRECONDITION :
+		$serviceName == "LogisticManager";
+		FACT PersonCall($callID, $location, $taskType);
+	BODY :
+		PERFORM ThrowGoal("CargoUnstoringPreparedRequestedTo");
+		PERFORM WaitGoalComplete("CargoUnstoringPreparedReportedFrom");
+		PERFORM FinalizeService($serviceName, $taskType);
+		
+	UTILITY : 1;
+}
+PLAN PERFORM ThrowGoal($goalName) {
+	ID : "ThrowGoalCargoStoringPreparedRequestedTo"
+	PRECONDITION :
+		$goalName == "CargoStoringPreparedRequestedTo";
+		FACT TaskReasoner($reasoner);
+	BODY :
+		$reasoner.sendToTM("postGoal", "CargoStoringPreparedRequestedTo", "$worker", "$goalID", "$goal");
+		PERFORM WaitGoalComplete($goalName);
+	UTILITY : 1;
+}
+
+PLAN PERFORM ThrowGoal($goalName) {
+	ID : "ThrowGoalStoredCargoRequestedTo"
+	PRECONDITION :
+		$goalName == "StoredCargoRequestedTo";
+		FACT TaskReasoner($reasoner);
+	BODY :
+		$reasoner.sendToTM("postGoal", "StoredCargoRequestedTo", $manager, $goalID, $goal);
+		PERFORM WaitGoalComplete($goalName);
+	UTILITY : 1;
+}
+
+PLAN PERFORM ThrowGoal($goalName) {
+	ID : "ThrowGoalUnstoredCargoRequestedTo"
+	PRECONDITION :
+		$goalName == "UnstoredCargoRequestedTo";
+		FACT TaskReasoner($reasoner);
+	BODY :
+		$reasoner.sendToTM("postGoal", "UnstoredCargoRequestedTo", $manager, $goalID, $goal);
+		PERFORM WaitGoalComplete($goalName);
+	UTILITY : 1;
+}
+
+PLAN PERFORM ThrowGoal($goalName) {
+	ID : "ThrowGoalCargoUnstoringPreparedRequestedTo"
+	PRECONDITION :
+		$goalName == "CargoUnstoringPreparedRequestedTo";
+		FACT TaskReasoner($reasoner);
+	BODY :
+		$reasoner.sendToTM("postGoal", "CargoUnstoringPreparedRequestedTo", $manager, $goalID, $goal);
+		PERFORM WaitGoalComplete($goalName);
+	UTILITY : 1;
+}
+
+
+
+PLAN PERFORM FinalizeService($serviceName, $taskType){
+	ID : "FinalizeLogisticManagerWorkflow1"
+	PRECONDITION :
+		$serviceName == "LogisticManager";
+		FACT PersonCall($callID, $location, $taskType);
+		FACT GLMessageManager($glMessageManager);
+	BODY :
+		RETRACT CargoStoringPreparedRequestedTo($v1, $v2, $v3);
+		RETRACT CargoStoringPreparedReportedFrom($v1, $v2, $v3);
+		RETRACT PersonCall($callID, $location, $taskType);
+		$data = "(context (CompletedPersonCall \"" + $callID + "\" \"" + $location + "\" \"" + $taskType + "\"))";
+		$glMessageManager.assertToLTM($data);
+	UTILITY : 1;
+}
+
+
+PLAN PERFORM FinalizeService($serviceName, $taskType){
+	ID : "FinalizeLogisticManagerWorkflow2"
+	PRECONDITION :
+		$serviceName == "LogisticManager";
+		FACT PersonCall($callID, $location, $taskType);	
+		FACT TaskReasoner($reasoner);	
+	BODY :
+		RETRACT StoredCargoRequestedTo($v1, $v2, $v3);
+		RETRACT StoredCargoReportedFrom($v1, $v2, $v3);
+		$data = "(context (CompletedPersonCall \"" + $callID + "\" \"" + $location + "\" \"" + $taskType + "\"))";
+		$glMessageManager.assertToLTM($data);
+	UTILITY : 1;
+}
+
+PLAN PERFORM FinalizeService($serviceName, $taskType){
+	ID : "FinalizeLogisticManagerWorkflow3"
+	PRECONDITION :
+		$serviceName == "LogisticManager";
+		FACT PersonCall($callID, $location, $taskType);		
+		FACT TaskReasoner($reasoner);
+	BODY :
+		RETRACT UnstoredCargoRequestedTo($v1, $v2, $v3);
+		RETRACT UnstoredCargoReportedFrom($v1, $v2, $v3);
+		$data = "(context (CompletedPersonCall \"" + $callID + "\" \"" + $location + "\" \"" + $taskType + "\"))";
+		$glMessageManager.assertToLTM($data);
+	UTILITY : 1;
+}
+
+
+PLAN PERFORM FinalizeService($serviceName, $taskType){
+	ID : "FinalizeLogisticManagerWorkflow4"
+	PRECONDITION :
+		$serviceName == "LogisticManager";
+		FACT PersonCall($callID, $location, $taskType);
+		FACT TaskReasoner($reasoner);
+	BODY :
+		RETRACT CargoUnstoringPreparedRequestedTo($v1, $v2, $v3);
+		RETRACT CargoUnstoringPreparedReportedFrom($v1, $v2, $v3);
+		$data = "(context (CompletedPersonCall \"" + $callID + "\" \"" + $location + "\" \"" + $taskType + "\"))";
+		$glMessageManager.assertToLTM($data);
+	UTILITY : 1;
+}

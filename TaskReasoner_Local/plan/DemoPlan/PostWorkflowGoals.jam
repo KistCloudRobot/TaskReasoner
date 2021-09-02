@@ -1,0 +1,21 @@
+
+PLAN PERFORM PostWorkflowGoals() {
+	ID : "PostWorkflowGoals"
+	BODY :
+		POST PERFORM ThrowWorkflow("LogisticManager", "PrepareStoring");
+		
+		POST PERFORM ThrowWorkflow("LogisticManager", "Storing");
+		
+		POST PERFORM ThrowWorkflow("LogisticManager", "PrepareUnstoring");
+		
+		POST PERFORM ThrowWorkflow("LogisticManager", "Unstoring");
+		
+		POST PERFORM ThrowWorkflow("StoringManager", "CargoStoringPrepared");
+		
+		POST PERFORM ThrowWorkflow("StoringManager", "StoredCargo");
+		
+		POST PERFORM ThrowWorkflow("UnstoringManager", "CargoUnstoringPrepared");
+		
+		POST PERFORM ThrowWorkflow("UnstoringManager", "UnstoredCargo");
+	UTILITY : 10;
+}
