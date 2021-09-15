@@ -24,10 +24,14 @@ PLAN PERFORM boot() {
 		$taskReasoner.loadPlan("plan/planList.jam");
 		
 		PERFORM loadPlanPackage();
-		System.out.println("boot success");
 		
-		PERFORM PostWorkflowGoals();
+		System.out.println("post goals");
+		ASSERT PostWorkflowGoals();
+		
+		System.out.println("boot success");
+		ASSERT BootComplete();
 
+	utility : 10;
 }
 /*
 

@@ -36,7 +36,7 @@ import uos.ai.jam.JAM;
 
 public class TaskReasoner_Local extends ArbiAgent {
 	
-	private static String brokerURI = "tcp://172.16.165.204:61316";
+	private static String brokerURI = "tcp://172.16.165.204:8000";
 	private static String myURI = "www.arbi.com/Local/TaskReasoner";
 	private static int brokerType = 2;
 	private static String TM_URI = "www.arbi.com/Local/TaskManager";
@@ -58,6 +58,9 @@ public class TaskReasoner_Local extends ArbiAgent {
 	private UtilityCalculator							utilityCalculator;
 	
 
+	private int logisticManagerUtility;
+
+	private int StoringManagerUtility;
 	public TaskReasoner_Local() {
 		
 		//config();
@@ -79,7 +82,8 @@ public class TaskReasoner_Local extends ArbiAgent {
 		loggerManager = LoggerManager.getInstance();
 		
 		taskReasonerAction = new TaskReasonerAction(this, interpreter, loggerManager);
-		
+		logisticManagerUtility = 100;
+		StoringManagerUtility = 99; 
 		init();
 	}
 	
@@ -138,6 +142,31 @@ public class TaskReasoner_Local extends ArbiAgent {
 		t.run();
 	}
 		
+	public int getUtility(String roleName) {
+		if(roleName.equals("LogisticManager")) {
+			logisticManagerUtility -= 2;
+			System.out.println("utility : " + logisticManagerUtility);
+			return logisticManagerUtility;
+		} else if (roleName.equals("StoringCarrier")) {
+
+			StoringManagerUtility -= 2;
+			System.out.println("utility : " + StoringManagerUtility);
+			return StoringManagerUtility;
+		}
+		
+		return 0;
+	}
+	
+	public Boolean sleepAwhile(int mileSecond) {
+		try {
+			Thread.sleep(mileSecond);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return true;
+	}
 	@Override
 	public void onStart() {
 		System.out.println("====onStart====");
@@ -227,10 +256,16 @@ public class TaskReasoner_Local extends ArbiAgent {
 			return true;
 		}
 	}
-		
-	public boolean sendToTM(String type, String name, Object... args) {
-		//System.out.println("send to tm : " + type + ", " +name);
-		this.send(agentURIPrefix + TM_URI, glMessageManager.makeGLMessage(type, name, args));
+			
+	public boolean sendToTM(String type, String gl) {
+		try {
+			Thread.sleep(50);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("send to tm : " + type + ", " + gl);
+		this.send(agentURIPrefix + TM_URI, "(" + type + " " + gl+ ")");
 		
 		return true;
 	}

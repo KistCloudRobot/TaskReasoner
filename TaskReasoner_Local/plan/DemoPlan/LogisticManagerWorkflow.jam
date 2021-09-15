@@ -6,13 +6,23 @@ PLAN ACHIEVE ThrowWorkflow($serviceName, $taskType) {
 	ID : "LogisticManagerWorkflow1"
 	PRECONDITION :
 		$serviceName == "LogisticManager";
-		FACT PersonCall($callID, $location, $taskType);
+		FACT PersonCall($callID, $location, $cmd);
+		$cmd == "PrepareStoring";
+		FACT TaskReasoner($reasoner);
 	BODY :
 		PERFORM ThrowGoal("CargoStoringPreparedRequestedTo");
+		
+		PERFORM WaitGoalComplete("CargoStoringPreparedRequestedFrom");
+		PERFORM ThrowGoal("PalletTransportedRequestedTo");
+		PERFORM WaitGoalComplete("PalletTransportedReportedFrom");
+		PERFORM ThrowGoal("CargoStoringPreparedReportedTo");
+		
 		PERFORM WaitGoalComplete("CargoStoringPreparedReportedFrom");
+		
+		$taskType = $cmd;
 		PERFORM FinalizeService($serviceName, $taskType);
 		
-	UTILITY : 1;
+	UTILITY : 100;
 }
 
 PLAN ACHIEVE ThrowWorkflow($serviceName, $taskType) {
@@ -20,38 +30,44 @@ PLAN ACHIEVE ThrowWorkflow($serviceName, $taskType) {
 	PRECONDITION :
 		$serviceName == "LogisticManager";
 		FACT PersonCall($callID, $location, $cmd);
+		$cmd == "Storing";
 	BODY :
+		$taskType = $cmd;
 		PERFORM ThrowGoal("StoredCargoRequestedTo");
 		PERFORM WaitGoalComplete("StoredCargoReportedFrom");
 		PERFORM FinalizeService($serviceName, $taskType);
 		
-	UTILITY : 1;
+	UTILITY : 10;
 }
 
 PLAN ACHIEVE ThrowWorkflow($serviceName, $taskType) {
 	ID : "LogisticManagerWorkflow3"
 	PRECONDITION :
 		$serviceName == "LogisticManager";
-		FACT PersonCall($callID, $location, $taskType);
+		FACT PersonCall($callID, $location, $cmd);
+		$cmd == "PrepareUnstoring";
 	BODY :
+		$taskType = $cmd;
 		PERFORM ThrowGoal("UnstoredCargoRequestedTo");
 		PERFORM WaitGoalComplete("UnstoredCargoReportedFrom");
 		PERFORM FinalizeService($serviceName, $taskType);
 		
-	UTILITY : 1;
+	UTILITY : 10;
 }
 
 PLAN ACHIEVE ThrowWorkflow($serviceName, $taskType) {
 	ID : "LogisticManagerWorkflow4"
 	PRECONDITION :
 		$serviceName == "LogisticManager";
-		FACT PersonCall($callID, $location, $taskType);
+		FACT PersonCall($callID, $location, $cmd);
+		$cmd == "Unstoring";
 	BODY :
+		$taskType = $cmd;
 		PERFORM ThrowGoal("CargoUnstoringPreparedRequestedTo");
 		PERFORM WaitGoalComplete("CargoUnstoringPreparedReportedFrom");
 		PERFORM FinalizeService($serviceName, $taskType);
 		
-	UTILITY : 1;
+	UTILITY : 10;
 }
 PLAN PERFORM ThrowGoal($goalName) {
 	ID : "ThrowGoalCargoStoringPreparedRequestedTo"
@@ -59,9 +75,10 @@ PLAN PERFORM ThrowGoal($goalName) {
 		$goalName == "CargoStoringPreparedRequestedTo";
 		FACT TaskReasoner($reasoner);
 	BODY :
-		$reasoner.sendToTM("postGoal", "CargoStoringPreparedRequestedTo", "$worker", "$goalID", "$goal");
+		$data = "(CargoStoringPreparedRequestedTo $worker $goalID $goal)";
+		$reasoner.sendToTM("PostGoal", $data);
 		PERFORM WaitGoalComplete($goalName);
-	UTILITY : 1;
+	UTILITY : 10;
 }
 
 PLAN PERFORM ThrowGoal($goalName) {
@@ -70,9 +87,10 @@ PLAN PERFORM ThrowGoal($goalName) {
 		$goalName == "StoredCargoRequestedTo";
 		FACT TaskReasoner($reasoner);
 	BODY :
-		$reasoner.sendToTM("postGoal", "StoredCargoRequestedTo", $manager, $goalID, $goal);
+		$data = "(StoredCargoRequestedTo $manager $goalID $goal)";
+		$reasoner.sendToTM("PostGoal", $data);
 		PERFORM WaitGoalComplete($goalName);
-	UTILITY : 1;
+	UTILITY : 10;
 }
 
 PLAN PERFORM ThrowGoal($goalName) {
@@ -81,9 +99,10 @@ PLAN PERFORM ThrowGoal($goalName) {
 		$goalName == "UnstoredCargoRequestedTo";
 		FACT TaskReasoner($reasoner);
 	BODY :
-		$reasoner.sendToTM("postGoal", "UnstoredCargoRequestedTo", $manager, $goalID, $goal);
+		$data = "(UnstoredCargoRequestedTo $manager $goalID $goal)";
+		$reasoner.sendToTM("PostGoal", $data);
 		PERFORM WaitGoalComplete($goalName);
-	UTILITY : 1;
+	UTILITY : 10;
 }
 
 PLAN PERFORM ThrowGoal($goalName) {
@@ -92,9 +111,10 @@ PLAN PERFORM ThrowGoal($goalName) {
 		$goalName == "CargoUnstoringPreparedRequestedTo";
 		FACT TaskReasoner($reasoner);
 	BODY :
-		$reasoner.sendToTM("postGoal", "CargoUnstoringPreparedRequestedTo", $manager, $goalID, $goal);
+		$data = "(CargoUnstoringPreparedRequestedTo $manager $goalID $goal)";
+		$reasoner.sendToTM("PostGoal", $data);
 		PERFORM WaitGoalComplete($goalName);
-	UTILITY : 1;
+	UTILITY : 10;
 }
 
 
@@ -111,7 +131,7 @@ PLAN PERFORM FinalizeService($serviceName, $taskType){
 		RETRACT PersonCall($callID, $location, $taskType);
 		$data = "(context (CompletedPersonCall \"" + $callID + "\" \"" + $location + "\" \"" + $taskType + "\"))";
 		$glMessageManager.assertToLTM($data);
-	UTILITY : 1;
+	UTILITY : 10;
 }
 
 
@@ -126,7 +146,7 @@ PLAN PERFORM FinalizeService($serviceName, $taskType){
 		RETRACT StoredCargoReportedFrom($v1, $v2, $v3);
 		$data = "(context (CompletedPersonCall \"" + $callID + "\" \"" + $location + "\" \"" + $taskType + "\"))";
 		$glMessageManager.assertToLTM($data);
-	UTILITY : 1;
+	UTILITY : 10;
 }
 
 PLAN PERFORM FinalizeService($serviceName, $taskType){
@@ -140,7 +160,7 @@ PLAN PERFORM FinalizeService($serviceName, $taskType){
 		RETRACT UnstoredCargoReportedFrom($v1, $v2, $v3);
 		$data = "(context (CompletedPersonCall \"" + $callID + "\" \"" + $location + "\" \"" + $taskType + "\"))";
 		$glMessageManager.assertToLTM($data);
-	UTILITY : 1;
+	UTILITY : 10;
 }
 
 
@@ -155,5 +175,5 @@ PLAN PERFORM FinalizeService($serviceName, $taskType){
 		RETRACT CargoUnstoringPreparedReportedFrom($v1, $v2, $v3);
 		$data = "(context (CompletedPersonCall \"" + $callID + "\" \"" + $location + "\" \"" + $taskType + "\"))";
 		$glMessageManager.assertToLTM($data);
-	UTILITY : 1;
+	UTILITY : 10;
 }

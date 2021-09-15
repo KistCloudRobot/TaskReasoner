@@ -2,11 +2,12 @@ PREFIXES:
 	PREFIX arbi: <http://www.arbi.com//ontologies#>;
 	PREFIX isro: <http://www.arbi.com//BuiltInPlan#>;		
 	
-PLAN ACHIEVE ThrowWorkflow($serviceName, $taskType) {
+PLAN ACHIEVE ThrowWorkflowGoal($serviceName, $taskType) {
 	ID : "StoringManagerWorkflow1"
 	PRECONDITION :
 		$serviceName == "StoringManager";
 		$taskType == "CargoStoringPrepared";
+		FACT TaskReasoner($reasoner);
 	BODY :
 		PERFORM WaitGoalComplete("CargoStoringPreparedRequestedFrom");
 		PERFORM ThrowGoal("PalletTransportedRequestedTo");
@@ -14,7 +15,7 @@ PLAN ACHIEVE ThrowWorkflow($serviceName, $taskType) {
 		PERFORM ThrowGoal("CargoStoringPreparedReportedTo");
 		PERFORM FinalizeService($serviceName, $taskType);
 		
-	UTILITY : 1;
+	UTILITY : 10;
 }
 PLAN ACHIEVE ThrowWorkflow($serviceName, $taskType) {
 	ID : "StoringManagerWorkflow2"
@@ -28,7 +29,7 @@ PLAN ACHIEVE ThrowWorkflow($serviceName, $taskType) {
 		PERFORM ThrowGoal("StoredCargoReportedTo");
 		PERFORM FinalizeService($serviceName, $taskType);
 		
-	UTILITY : 1;
+	UTILITY : 10;
 }
 
 PLAN PERFORM ThrowGoal($goalName) {
@@ -38,10 +39,12 @@ PLAN PERFORM ThrowGoal($goalName) {
 		FACT TaskReasoner($reasoner);
 		$goalName == "PalletTransportedRequestedTo";
 	BODY :
-		$reasoner.sendToTM("postGoal", "PalletTransportedRequestedTo", "$worker", "$goalID", "$goal");
+		$data = "(PalletTransportedRequestedTo $worker $goalID $goal)";
+		$reasoner.sendToTM("PostGoal", $data);
 		PERFORM WaitGoalComplete($goalName);
-	UTILITY : 1;
+	UTILITY : 10;
 }
+
 PLAN PERFORM ThrowGoal($goalName) {
 	ID : "ThrowGoalPalletTransportedRequestedToOfStoredCargo"
 	PRECONDITION :
@@ -49,9 +52,10 @@ PLAN PERFORM ThrowGoal($goalName) {
 		FACT TaskReasoner($reasoner);
 		$goalName == "PalletTransportedRequestedTo";
 	BODY :
-		$reasoner.sendToTM("postGoal", "PalletTransportedRequestedTo", "$worker", "$goalID", "$goal");
+		$data = "(PalletTransportedRequestedTo $worker $goalID $goal)";
+		$reasoner.sendToTM("PostGoal", $data);
 		PERFORM WaitGoalComplete($goalName);
-	UTILITY : 1;
+	UTILITY : 10;
 }
 
 PLAN PERFORM ThrowGoal($goalName) {
@@ -62,9 +66,10 @@ PLAN PERFORM ThrowGoal($goalName) {
 		FACT CargoStoringPreparedRequestedFrom($manager, $goalID, $goal);
 		FACT TaskReasoner($reasoner);
 	BODY :
-		$reasoner.sendToTM("postGoal", "CargoStoringPreparedReportedTo", $manager, $goalID, $goal);
+		$data = "(CargoStoringPreparedReportedTo $manager $goalID $goal)";
+		$reasoner.sendToTM("PostGoal", $data);
 		PERFORM WaitGoalComplete($goalName);
-	UTILITY : 1;
+	UTILITY : 10;
 }
 
 PLAN PERFORM ThrowGoal($goalName) {
@@ -75,9 +80,10 @@ PLAN PERFORM ThrowGoal($goalName) {
 		FACT StoredCargoRequestedFrom($manager, $goalID, $goal);
 		FACT TaskReasoner($reasoner);
 	BODY :
-		$reasoner.sendToTM("postGoal", "StoredCargoReportedTo", $manager, $goalID, $goal);
+		$data = "(StoredCargoReportedTo $manager $goalID $goal)";
+		$reasoner.sendToTM("PostGoal", $data);
 		PERFORM WaitGoalComplete($goalName);
-	UTILITY : 1;
+	UTILITY : 10;
 }
 
 
@@ -92,7 +98,7 @@ PLAN PERFORM FinalizeService($serviceName, $taskType){
 		RETRACT PalletTransportedRequestedTo($v1, $v2, $v3);
 		RETRACT PalletTransportedReportedFrom($v1, $v2, $v3);
 		RETRACT CargoStoringPreparedReportedTo($v1, $v2, $v3);
-	UTILITY : 1;
+	UTILITY : 10;
 }
 
 
@@ -106,5 +112,5 @@ PLAN PERFORM FinalizeService($serviceName, $taskType){
 		RETRACT PalletTransportedRequestedTo($v1, $v2, $v3);
 		RETRACT PalletTransportedReportedFrom($v1, $v2, $v3);
 		RETRACT StoredCargoReportedTo($v1, $v2, $v3);
-	UTILITY : 1;
+	UTILITY : 10;
 }
