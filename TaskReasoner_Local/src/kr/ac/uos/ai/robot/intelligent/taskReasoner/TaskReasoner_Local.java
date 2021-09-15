@@ -35,11 +35,16 @@ import uos.ai.jam.Interpreter;
 import uos.ai.jam.JAM;
 
 public class TaskReasoner_Local extends ArbiAgent {
+
+	public static String ENV_JMS_BROKER;
+	public static String ENV_AGENT_NAME;
+	public static String ENV_ROBOT_NAME;
+	public static final String ARBI_PREFIX = "www.arbi.com/";
 	
 	private static String brokerURI = "tcp://172.16.165.204:8000";
-	private static String myURI = "www.arbi.com/Local/TaskReasoner";
+	private static String TASKREASONER_ADDRESS;
 	private static int brokerType = 2;
-	private static String TM_URI = "www.arbi.com/Local/TaskManager";
+	private static String TASKMANAGER_ADDRESS;
 
 	
 	private static final String	agentURIPrefix			= "agent://";
@@ -62,7 +67,8 @@ public class TaskReasoner_Local extends ArbiAgent {
 
 	private int StoringManagerUtility;
 	public TaskReasoner_Local() {
-		
+
+		initAddress();
 		//config();
 		interpreter = JAM.parse(new String[] {"plan/boot.jam"} );
 		
@@ -77,7 +83,7 @@ public class TaskReasoner_Local extends ArbiAgent {
 		//server = new Server(this);
 		utilityCalculator = new UtilityCalculator(interpreter);
 		
-		ArbiAgentExecutor.execute(brokerURI, agentURIPrefix+myURI, this, brokerType);
+		ArbiAgentExecutor.execute(brokerURI, agentURIPrefix+TASKREASONER_ADDRESS, this, brokerType);
 
 		loggerManager = LoggerManager.getInstance();
 		
@@ -86,7 +92,17 @@ public class TaskReasoner_Local extends ArbiAgent {
 		StoringManagerUtility = 99; 
 		init();
 	}
-	
+
+
+	public void initAddress() {
+		ENV_JMS_BROKER = System.getenv("JMS_BROKER");
+		ENV_AGENT_NAME = System.getenv("AGENT");
+		ENV_ROBOT_NAME = System.getenv("ROBOT");
+		
+		TASKMANAGER_ADDRESS = agentURIPrefix + ARBI_PREFIX + ENV_AGENT_NAME + "/TaskManager";
+		TASKREASONER_ADDRESS = ARBI_PREFIX + ENV_AGENT_NAME + "/TaskReasoner";
+		
+	}
 	private void config() {
 
 		try {
@@ -103,7 +119,7 @@ public class TaskReasoner_Local extends ArbiAgent {
 			
 			XPathExpression _myURI = xPath.compile("//AgentName");
 			n = (Node) _myURI.evaluate(doc, XPathConstants.NODE);
-			myURI = n.getTextContent();
+			TASKREASONER_ADDRESS = n.getTextContent();
 			
 			XPathExpression _brokerType = xPath.compile("//BrokerType");
 			n = (Node) _brokerType.evaluate(doc, XPathConstants.NODE);
@@ -115,7 +131,7 @@ public class TaskReasoner_Local extends ArbiAgent {
 			
 			XPathExpression _TM_URI = xPath.compile("//TaskManagerName");
 			n = (Node) _TM_URI.evaluate(doc, XPathConstants.NODE);
-			TM_URI = n.getTextContent();
+			TASKMANAGER_ADDRESS = n.getTextContent();
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -170,7 +186,7 @@ public class TaskReasoner_Local extends ArbiAgent {
 	@Override
 	public void onStart() {
 		System.out.println("====onStart====");
-		ds.connect(brokerURI, dsURIPrefix+myURI, 2);
+		ds.connect(brokerURI, dsURIPrefix+TASKREASONER_ADDRESS, 2);
 		//goal and context is wrapped
 		//String subscriveGoal = "(rule (fact (goal $goal $precondition $postcondition)) --> (notify (goal $goal $precondition $postcondition)))";
 		//ds.subscribe(subscriveGoal);
@@ -265,7 +281,7 @@ public class TaskReasoner_Local extends ArbiAgent {
 			e.printStackTrace();
 		}
 		System.out.println("send to tm : " + type + ", " + gl);
-		this.send(agentURIPrefix + TM_URI, "(" + type + " " + gl+ ")");
+		this.send(agentURIPrefix + TASKMANAGER_ADDRESS, "(" + type + " " + gl+ ")");
 		
 		return true;
 	}
