@@ -83,7 +83,7 @@ public class TaskReasoner_Local extends ArbiAgent {
 		//server = new Server(this);
 		utilityCalculator = new UtilityCalculator(interpreter);
 		
-		ArbiAgentExecutor.execute(brokerURI, agentURIPrefix+TASKREASONER_ADDRESS, this, brokerType);
+		ArbiAgentExecutor.execute(ENV_JMS_BROKER, agentURIPrefix+TASKREASONER_ADDRESS, this, brokerType);
 
 		loggerManager = LoggerManager.getInstance();
 		
@@ -95,7 +95,7 @@ public class TaskReasoner_Local extends ArbiAgent {
 
 
 	public void initAddress() {
-		ENV_JMS_BROKER = System.getenv("JMS_BROKER");
+		ENV_JMS_BROKER = "tcp://"+ System.getenv("JMS_BROKER");
 		ENV_AGENT_NAME = System.getenv("AGENT");
 		ENV_ROBOT_NAME = System.getenv("ROBOT");
 		
@@ -186,7 +186,7 @@ public class TaskReasoner_Local extends ArbiAgent {
 	@Override
 	public void onStart() {
 		System.out.println("====onStart====");
-		ds.connect(brokerURI, dsURIPrefix+TASKREASONER_ADDRESS, 2);
+		ds.connect(ENV_JMS_BROKER, dsURIPrefix+TASKREASONER_ADDRESS, 2);
 		//goal and context is wrapped
 		//String subscriveGoal = "(rule (fact (goal $goal $precondition $postcondition)) --> (notify (goal $goal $precondition $postcondition)))";
 		//ds.subscribe(subscriveGoal);
