@@ -70,7 +70,7 @@ public class TaskReasoner_Local extends ArbiAgent {
 
 		initAddress();
 		//config();
-		interpreter = JAM.parse(new String[] {"TaskReasonerPlan/boot.jam"} );
+		interpreter = JAM.parse(new String[] {"TaskReasonerLocalPlan/boot.jam"} );
 		
 		ds = new TaskReasonerDataSource(this);
 		
