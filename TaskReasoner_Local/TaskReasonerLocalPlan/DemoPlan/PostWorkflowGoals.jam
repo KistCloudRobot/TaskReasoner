@@ -20,7 +20,7 @@ PLAN CONCLUDE PostWorkflowGoals() {
 		System.out.println("====post start====");
 		
 		
-		POST PERFORM ThrowWorkflowGoal("StoringManager", "CargoStoringPrepared");
+		//POST PERFORM ThrowWorkflowGoal("StoringManager", "CargoStoringPrepared");
 		
 		System.out.println("====post complete====");
 		//ASSERT PostThrowWorkflowGoal("StoringManager", "CargoStoringPrepared");

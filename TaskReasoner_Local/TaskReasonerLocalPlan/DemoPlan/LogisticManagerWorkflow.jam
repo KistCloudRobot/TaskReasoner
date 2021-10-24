@@ -10,17 +10,22 @@ PLAN ACHIEVE ThrowWorkflow($serviceName, $taskType) {
 		$cmd == "PrepareStoring";
 		FACT TaskReasoner($reasoner);
 	BODY :
+		System.out.println("CargoStoringPrepared start");
 		PERFORM ThrowGoal("CargoStoringPreparedRequestedTo");
-		
+		System.out.println("CargoStoringPrepared finalized");
 		PERFORM WaitGoalComplete("CargoStoringPreparedRequestedFrom");
+		
 		PERFORM ThrowGoal("PalletTransportedRequestedTo");
+		System.out.println("PalletTransportedRequested start");
 		PERFORM WaitGoalComplete("PalletTransportedReportedFrom");
+		System.out.println("PalletTransportedRequested finalized");
 		PERFORM ThrowGoal("CargoStoringPreparedReportedTo");
+		System.out.println("CargoStoringPreparedReportedTo start");
 		
 		PERFORM WaitGoalComplete("CargoStoringPreparedReportedFrom");
+		System.out.println("CargoStoringPreparedReportedTo finalized");
 		
-		$taskType = $cmd;
-		PERFORM FinalizeService($serviceName, $taskType);
+		PERFORM FinalizeService($serviceName, $cmd);
 		
 	UTILITY : 100;
 }
@@ -32,12 +37,19 @@ PLAN ACHIEVE ThrowWorkflow($serviceName, $taskType) {
 		FACT PersonCall($callID, $location, $cmd);
 		$cmd == "Storing";
 	BODY :
-		$taskType = $cmd;
+		System.out.println("StoredCargoRequest start");
 		PERFORM ThrowGoal("StoredCargoRequestedTo");
-		PERFORM WaitGoalComplete("StoredCargoReportedFrom");
+		
+		PERFORM WaitGoalComplete("StoredCargoRequestedFrom");
+		PERFORM ThrowGoal("PalletTransportedRequestedTo");
+		PERFORM WaitGoalComplete("PalletTransportedReportedFrom");
+		PERFORM ThrowGoal("StoredCargoReportedTo");
 		PERFORM FinalizeService($serviceName, $taskType);
 		
-	UTILITY : 10;
+		PERFORM WaitGoalComplete("StoredCargoReportedFrom");
+		PERFORM FinalizeService($serviceName, $taskType);
+		System.out.println("StoredCargoRequest finalized");
+	UTILITY : 100;
 }
 
 PLAN ACHIEVE ThrowWorkflow($serviceName, $taskType) {
@@ -48,10 +60,21 @@ PLAN ACHIEVE ThrowWorkflow($serviceName, $taskType) {
 		$cmd == "PrepareUnstoring";
 	BODY :
 		$taskType = $cmd;
+		System.out.println("unstored cargo request start");
 		PERFORM ThrowGoal("UnstoredCargoRequestedTo");
 		PERFORM WaitGoalComplete("UnstoredCargoReportedFrom");
 		PERFORM FinalizeService($serviceName, $taskType);
 		
+		PERFORM ThrowGoal("PalletTransportedRequestedTo");
+		PERFORM WaitGoalComplete("PalletTransportedReportedFrom");
+		
+		PERFORM ThrowGoal("MovingRackTransportedRequestedTo");
+		PERFORM WaitGoalComplete("MovingRackTransportedRequestedFrom");
+		
+		
+		PERFORM FinalizeService($serviceName, $taskType);
+		
+		System.out.println("unstored cargo request3 finalized");
 	UTILITY : 10;
 }
 
@@ -62,10 +85,18 @@ PLAN ACHIEVE ThrowWorkflow($serviceName, $taskType) {
 		FACT PersonCall($callID, $location, $cmd);
 		$cmd == "Unstoring";
 	BODY :
+		System.out.println("CargoUnstoringPrepared start");
 		$taskType = $cmd;
 		PERFORM ThrowGoal("CargoUnstoringPreparedRequestedTo");
 		PERFORM WaitGoalComplete("CargoUnstoringPreparedReportedFrom");
+		
+		PERFORM ThrowGoal("PalletTransportedRequestedTo");
+		PERFORM WaitGoalComplete("PalletTransportedReportedFrom");
+		
 		PERFORM FinalizeService($serviceName, $taskType);
+		
+		
+		System.out.println("CargoUnstoringPrepared finalized");
 		
 	UTILITY : 10;
 }
@@ -126,11 +157,17 @@ PLAN PERFORM FinalizeService($serviceName, $taskType){
 		FACT PersonCall($callID, $location, $taskType);
 		FACT GLMessageManager($glMessageManager);
 	BODY :
+		System.out.println("start finalize1");
 		RETRACT CargoStoringPreparedRequestedTo($v1, $v2, $v3);
+		System.out.println("start finalize2");
 		RETRACT CargoStoringPreparedReportedFrom($v1, $v2, $v3);
+		System.out.println("start finalize3");
 		RETRACT PersonCall($callID, $location, $taskType);
+		System.out.println("start finalize4");
 		$data = "(context (CompletedPersonCall \"" + $callID + "\" \"" + $location + "\" \"" + $taskType + "\"))";
+		System.out.println("start finalize5");
 		$glMessageManager.assertToLTM($data);
+		System.out.println("start finalize end");
 	UTILITY : 10;
 }
 
