@@ -66,13 +66,17 @@ PLAN ACHIEVE ThrowWorkflow($serviceName, $taskType) {
 		System.out.println("here?????2");
 		
 		perform WaitGoalComplete("CargoUnstoringPreparedRequestedFrom");
+		PERFORM ThrowGoal("MovingRackTransportedRequestedTo");
 		
 		System.out.println("here?????3");
-		//PERFORM ThrowGoal("PalletTransportedRequestedTo");
+		PERFORM ThrowGoal("PalletTransportedRequestedTo");
 		System.out.println("here?????4");
-		//PERFORM WaitGoalComplete("PalletTransportedReportedFrom");
+		
+		
 		System.out.println("here?????5");
-		PERFORM ThrowGoal("MovingRackTransportedRequestedTo");
+		
+		PERFORM WaitGoalComplete("PalletTransportedReportedFrom");
+		
 		PERFORM WaitGoalComplete("MovingRackTransportedRequestedFrom");
 		
 		

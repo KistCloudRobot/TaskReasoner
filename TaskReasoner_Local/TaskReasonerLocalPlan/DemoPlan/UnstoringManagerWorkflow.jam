@@ -73,7 +73,8 @@ PLAN PERFORM ThrowGoal($goalName) {
 		FACT CargoUnstoringPreparedRequestedFrom($manager, $goalID, $goal);
 		FACT TaskReasoner($reasoner);
 	BODY :
-		$reasoner.sendToTM("PostGoal", "CargoUnstoringPreparedReportedTo", $manager, $goalID, $goal);
+		$data = "(CargoUnstoringPreparedReportedTo + \"" + $manager + "\" \"" + $goalID + "\" \"" + $goal + "\")";
+		$reasoner.sendToTM("PostGoal", $data);
 		PERFORM WaitGoalComplete($goalName);
 	UTILITY : 10;
 }
@@ -88,7 +89,8 @@ PLAN PERFORM ThrowGoal($goalName) {
 		FACT UnstoredCargoRequestedFrom($manager, $goalID, $goal);
 		FACT TaskReasoner($reasoner);
 	BODY :
-		$reasoner.sendToTM("PostGoal", "UnstoredCargoReportedTo", $manager, $goalID, $goal);
+		$data = "(UnstoredCargoReportedTo + \"" + $manager + "\" \"" + $goalID + "\" \"" + $goal + "\")";
+		$reasoner.sendToTM("PostGoal",$data);
 		PERFORM WaitGoalComplete($goalName);
 	UTILITY : 10;
 }
