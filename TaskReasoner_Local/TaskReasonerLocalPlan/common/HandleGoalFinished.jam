@@ -1,0 +1,10 @@
+
+PLAN Conclude GoalFinished($goalName, $caller,$goalID,$goal) {
+	ID : "GoalFinishedHandle"
+
+	BODY :
+		System.out.println("Goal received : " + $goalName);
+		assert GoalComplete($goalName);	
+		retract GoalFinished;
+	UTILITY : 1000;
+}

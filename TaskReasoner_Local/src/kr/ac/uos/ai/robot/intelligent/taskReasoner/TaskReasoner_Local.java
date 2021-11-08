@@ -256,17 +256,9 @@ public class TaskReasoner_Local extends ArbiAgent {
 
 				gl = GLFactory.newGLFromGLString(data);
 
-				System.out.println("message dequeued : " + gl.toString());
-
-				if (gl.getName().equals("context")) {
-
-					glMessageManager.assertContext(gl.getExpression(0).asGeneralizedList());
-				} else if (gl.getName().equals("goalComplete")) {
-					glMessageManager.assertContext(gl.getExpression(0).asGeneralizedList());
-					glMessageManager.assertFact("GoalCompleted", gl.getExpression(0).asGeneralizedList().getName());
-				} else {
-					glMessageManager.assertFact("RecievedMessage", sender, data);
-				}
+				System.out.println("message from " + sender  + " dequeued : " + gl.toString());
+				glMessageManager.assertContext(gl.getExpression(0).asGeneralizedList());
+				
 
 			} catch (InterruptedException | ParseException e) {
 				// TODO Auto-generated catch block

@@ -5,9 +5,9 @@ PREFIXES:
 PLAN PERFORM WaitGoalComplete($goal) {
 	ID : "WaitGoalComplete"
 	PRECONDITION :
-		FACT GoalCompleted($goal);
+		FACT GoalComplete($goal);
 	BODY :
-		RETRACT GoalCompleted($goal);
+		RETRACT GoalComplete($goal);
 		
 	UTILITY : 100;
 }
