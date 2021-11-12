@@ -99,7 +99,7 @@ public class TaskReasoner_Local extends ArbiAgent {
 		//ENV_AGENT_NAME = System.getenv("AGENT");
 		//ENV_ROBOT_NAME = System.getenv("ROBOT");
 		
-		ENV_JMS_BROKER = "tcp://127.0.0.1" + ":61313";
+		ENV_JMS_BROKER = "tcp://172.16.165.171" + ":61313";
 		ENV_AGENT_NAME = "Local";
 
 		TASKMANAGER_ADDRESS = ARBI_PREFIX + ENV_AGENT_NAME + "/TaskManager";

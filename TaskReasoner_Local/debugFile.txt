@@ -767,3 +767,16 @@
 [ExceptionLog 2021-11-12 12:51:02]ghost msg : Subscribe:1636689062046 action: Resultclient : ds://www.arbi.com/Local/TaskReasoner
 [ExceptionLog 2021-11-12 13:01:58]ghost msg : Subscribe:1636689718411 action: Resultclient : ds://www.arbi.com/Local/TaskReasoner
 [ExceptionLog 2021-11-12 13:14:02]ghost msg : Subscribe:1636690442870 action: Resultclient : ds://www.arbi.com/Local/TaskReasoner
+[ExceptionLog 2021-11-12 13:56:51]ghost msg : Subscribe:1636693011142 action: Resultclient : ds://www.arbi.com/Local/TaskReasoner
+[ExceptionLog 2021-11-12 14:41:38]ghost msg : Subscribe:1636695698974 action: Resultclient : ds://www.arbi.com/Local/TaskReasoner
+[ExceptionLog 2021-11-12 14:51:19]ghost msg : Subscribe:1636696279826 action: Resultclient : ds://www.arbi.com/Local/TaskReasoner
+[ExceptionLog 2021-11-12 14:54:22]ghost msg : Subscribe:1636696462339 action: Resultclient : ds://www.arbi.com/Local/TaskReasoner
+[ExceptionLog 2021-11-12 15:05:17]ghost msg : Subscribe:1636697117605 action: Resultclient : ds://www.arbi.com/Local/TaskReasoner
+[ExceptionLog 2021-11-12 15:13:58]ghost msg : Subscribe:1636697638249 action: Resultclient : ds://www.arbi.com/Local/TaskReasoner
+[ExceptionLog 2021-11-12 15:28:32]ghost msg : Subscribe:1636698511991 action: Resultclient : ds://www.arbi.com/Local/TaskReasoner
+[ExceptionLog 2021-11-12 15:31:45]ghost msg : Subscribe:1636698705884 action: Resultclient : ds://www.arbi.com/Local/TaskReasoner
+[ExceptionLog 2021-11-12 15:40:36]ghost msg : Subscribe:1636699236598 action: Resultclient : ds://www.arbi.com/Local/TaskReasoner
+[ExceptionLog 2021-11-12 15:52:24]ghost msg : Subscribe:1636699944900 action: Resultclient : ds://www.arbi.com/Local/TaskReasoner
+[ExceptionLog 2021-11-12 16:07:09]ghost msg : Subscribe:1636700829057 action: Resultclient : ds://www.arbi.com/Local/TaskReasoner
+[ExceptionLog 2021-11-12 16:11:56]ghost msg : Subscribe:1636701116059 action: Resultclient : ds://www.arbi.com/Local/TaskReasoner
+[ExceptionLog 2021-11-12 16:12:50]ghost msg : Subscribe:1636701170630 action: Resultclient : ds://www.arbi.com/Local/TaskReasoner
