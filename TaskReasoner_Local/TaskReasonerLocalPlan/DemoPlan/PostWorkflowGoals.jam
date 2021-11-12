@@ -4,38 +4,35 @@ PLAN CONCLUDE PostWorkflowGoals() {
 	PRECONDITION :
 		FACT TaskReasoner($tr);
 	BODY :
+		//System.out.println("====post start====");
+		
+		//POST PERFORM ThrowWorkflowA("LogisticManager", "PrepareStoring");
+		
+		//System.out.println("====post complete====");
+		
+		//$tr.sleepAwhile(10);
+		
 		System.out.println("====post start====");
 		
-		POST PERFORM ThrowWorkflow("LogisticManager", "PrepareStoring");
+		POST PERFORM ThrowWorkflowB("LogisticManager", "PrepareStoring");
 		
 		System.out.println("====post complete====");
 		
 		$tr.sleepAwhile(10);
-		//POST PERFORM ThrowWorkflow("LogisticManager", "Storing");
-		
-		//POST PERFORM ThrowWorkflow("LogisticManager", "PrepareUnstoring");
-		
-		//POST PERFORM ThrowWorkflow("LogisticManager", "Unstoring");
 		
 		System.out.println("====post start====");
 		
-		
-		//POST PERFORM ThrowWorkflowGoal("StoringManager", "CargoStoringPrepared");
+		POST PERFORM ThrowWorkflowC("LogisticManager", "PrepareStoring");
 		
 		System.out.println("====post complete====");
-		//ASSERT PostThrowWorkflowGoal("StoringManager", "CargoStoringPrepared");
 		
+		$tr.sleepAwhile(10);
 		
-		//POST PERFORM ThrowWorkflowGoal("StoringManager", "CargoStoringPrepared");
+		System.out.println("====post start====");
 		
+		POST PERFORM ThrowWorkflowD("LogisticManager", "PrepareStoring");
 		
-		//POST PERFORM ThrowWorkflow("StoringManager", "StoredCargo");
-		
-		//POST PERFORM ThrowWorkflow("UnstoringManager", "CargoUnstoringPrepared");
-		
-		//POST PERFORM ThrowWorkflow("UnstoringManager", "UnstoredCargo");
-		
-		System.out.println("==post complete==");
+		System.out.println("====post complete====");
 		
 		RETRACT PostWorkflowGoals();
 	UTILITY : 1000;

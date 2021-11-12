@@ -6,5 +6,5 @@ PLAN Conclude GoalFinished($goalName, $caller,$goalID,$goal) {
 		System.out.println("Goal received : " + $goalName);
 		assert GoalComplete($goalName);	
 		retract GoalFinished;
-	UTILITY : 1000;
+	UTILITY : 100000000;
 }

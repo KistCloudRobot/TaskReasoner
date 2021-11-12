@@ -9,5 +9,5 @@ PLAN PERFORM WaitGoalComplete($goal) {
 	BODY :
 		RETRACT GoalComplete($goal);
 		
-	UTILITY : 100;
+	UTILITY : 90;
 }

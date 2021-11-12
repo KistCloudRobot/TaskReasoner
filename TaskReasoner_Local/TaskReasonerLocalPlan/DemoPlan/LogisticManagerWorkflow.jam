@@ -2,7 +2,7 @@ PREFIXES:
 	PREFIX arbi: <http://www.arbi.com//ontologies#>;
 	PREFIX isro: <http://www.arbi.com//BuiltInPlan#>;		
 	
-PLAN ACHIEVE ThrowWorkflow($serviceName, $taskType) {
+PLAN ACHIEVE ThrowWorkflowA($serviceName, $taskType) {
 	ID : "LogisticManagerWorkflow1"
 	PRECONDITION :
 		$serviceName == "LogisticManager";
@@ -14,6 +14,8 @@ PLAN ACHIEVE ThrowWorkflow($serviceName, $taskType) {
 		PERFORM ThrowGoal("CargoStoringPreparedRequestedTo");
 		System.out.println("CargoStoringPrepared finalized");
 		PERFORM WaitGoalComplete("CargoStoringPreparedRequestedFrom");
+		
+		
 		
 		PERFORM ThrowGoal("PalletTransportedRequestedTo");
 		System.out.println("PalletTransportedRequested start");
@@ -27,57 +29,57 @@ PLAN ACHIEVE ThrowWorkflow($serviceName, $taskType) {
 		
 		PERFORM FinalizeService($serviceName, $cmd);
 		
-	UTILITY : 100;
+	UTILITY : 50;
 }
 
-PLAN ACHIEVE ThrowWorkflow($serviceName, $taskType) {
+PLAN ACHIEVE ThrowWorkflowB($serviceName, $taskType) {
 	ID : "LogisticManagerWorkflow2"
 	PRECONDITION :
 		$serviceName == "LogisticManager";
 		FACT PersonCall($callID, $location, $cmd);
 		$cmd == "Storing";
 	BODY :
+	/*
 		System.out.println("StoredCargoRequest start");
-		PERFORM ThrowGoal("StoredCargoRequestedTo");
 		
-		PERFORM WaitGoalComplete("StoredCargoRequestedFrom");
 		PERFORM ThrowGoal("PalletTransportedRequestedTo");
+		
+		PERFORM ThrowGoal("MovingRackTransportedRequestedTo");
+
+		PERFORM WaitGoalComplete("MovingRackTransportedRequestedFrom");
 		PERFORM WaitGoalComplete("PalletTransportedReportedFrom");
+		
+		
 		PERFORM ThrowGoal("StoredCargoReportedTo");
 		PERFORM FinalizeService($serviceName, $taskType);
 		
 		PERFORM WaitGoalComplete("StoredCargoReportedFrom");
 		PERFORM FinalizeService($serviceName, $taskType);
+		*/
 		System.out.println("StoredCargoRequest finalized");
-	UTILITY : 100;
+	UTILITY : 120;
 }
 
-PLAN ACHIEVE ThrowWorkflow($serviceName, $taskType) {
+PLAN ACHIEVE ThrowWorkflowC($serviceName, $taskType) {
 	ID : "LogisticManagerWorkflow3"
 	PRECONDITION :
 		$serviceName == "LogisticManager";
 		FACT PersonCall($callID, $location, $cmd);
 		$cmd == "PrepareUnstoring";
+		fact GoalAvailable();
 	BODY :
-		
+	
 		System.out.println("CargoUnstoringPrepared start");
 		System.out.println("here?????1");
-		PERFORM ThrowGoal("CargoUnstoringPreparedRequestedTo");
-		System.out.println("here?????2");
 		
-		perform WaitGoalComplete("CargoUnstoringPreparedRequestedFrom");
-		PERFORM ThrowGoal("MovingRackTransportedRequestedTo");
 		
-		System.out.println("here?????3");
+		
 		PERFORM ThrowGoal("PalletTransportedRequestedTo");
-		System.out.println("here?????4");
 		
-		
-		System.out.println("here?????5");
 		
 		PERFORM WaitGoalComplete("PalletTransportedReportedFrom");
 		
-		PERFORM WaitGoalComplete("MovingRackTransportedRequestedFrom");
+		
 		
 		
 		PERFORM ThrowGoal("CargoUnstoringPreparedReportedTo");
@@ -86,10 +88,10 @@ PLAN ACHIEVE ThrowWorkflow($serviceName, $taskType) {
 		PERFORM FinalizeService($serviceName, $taskType);
 		
 		System.out.println("CargoUnstoringPrepared finalized");
-	UTILITY : 10;
+	UTILITY : 80;
 }
 
-PLAN ACHIEVE ThrowWorkflow($serviceName, $taskType) {
+PLAN ACHIEVE ThrowWorkflowD($serviceName, $taskType) {
 	ID : "LogisticManagerWorkflow4"
 	PRECONDITION :
 		$serviceName == "LogisticManager";
@@ -98,14 +100,36 @@ PLAN ACHIEVE ThrowWorkflow($serviceName, $taskType) {
 	BODY :
 	
 		System.out.println("unstored cargo request start");
+		PERFORM ThrowGoal("StoredCargoRequestedTo");
+		
+		PERFORM WaitGoalComplete("StoredCargoRequestedFrom");
+		
 		PERFORM ThrowGoal("UnstoredCargoRequestedTo");
 		PERFORM WaitGoalComplete("UnstoredCargoRequestedFrom");
-
-		PERFORM ThrowGoal("PalletTransportedRequestedTo");
-		PERFORM WaitGoalComplete("PalletTransportedReportedFrom");
+		
 		
 		PERFORM ThrowGoal("MovingRackTransportedRequestedTo");
+		
+		PERFORM ThrowGoal("CargoUnstoringPreparedRequestedTo");
+		System.out.println("here?????2");
+		
+		perform WaitGoalComplete("CargoUnstoringPreparedRequestedFrom");
+		
+
+
+		PERFORM ThrowGoal("PalletTransportedRequestedTo");
+		
+		
+		PERFORM ThrowGoal("MovingRackTransportedRequestedTo");
+		
+		
+		System.out.println("goal thrown");
+		
+		assert GoalAvailable();
 		PERFORM WaitGoalComplete("MovingRackTransportedRequestedFrom");
+		
+		PERFORM WaitGoalComplete("MovingRackTransportedRequestedFrom");
+		PERFORM WaitGoalComplete("PalletTransportedReportedFrom");
 		
 		PERFORM ThrowGoal("UnstoredCargoReportedTo");
 		PERFORM WaitGoalComplete("UnstoredCargoReportedFrom");
@@ -115,7 +139,7 @@ PLAN ACHIEVE ThrowWorkflow($serviceName, $taskType) {
 		System.out.println("unstored cargo request finalized");
 		
 		
-	UTILITY : 10;
+	UTILITY : 50;
 }
 PLAN PERFORM ThrowGoal($goalName) {
 	ID : "ThrowGoalCargoStoringPreparedRequestedTo"
