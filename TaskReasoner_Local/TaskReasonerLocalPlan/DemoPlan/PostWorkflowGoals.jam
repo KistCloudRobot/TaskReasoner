@@ -1,4 +1,5 @@
 
+
 PLAN CONCLUDE PostWorkflowGoals() {
 	ID : "PostWorkflowGoals"
 	PRECONDITION :
@@ -11,26 +12,6 @@ PLAN CONCLUDE PostWorkflowGoals() {
 		//System.out.println("====post complete====");
 		
 		//$tr.sleepAwhile(10);
-		
-		System.out.println("====post start====");
-		
-		POST PERFORM ThrowWorkflowB("LogisticManager", "PrepareStoring");
-		
-		System.out.println("====post complete====");
-		
-		$tr.sleepAwhile(10);
-		
-		System.out.println("====post start====");
-		
-		POST PERFORM ThrowWorkflowC("LogisticManager", "PrepareStoring");
-		
-		System.out.println("====post complete====");
-		
-		$tr.sleepAwhile(10);
-		
-		System.out.println("====post start====");
-		
-		POST PERFORM ThrowWorkflowD("LogisticManager", "PrepareStoring");
 		
 		System.out.println("====post complete====");
 		

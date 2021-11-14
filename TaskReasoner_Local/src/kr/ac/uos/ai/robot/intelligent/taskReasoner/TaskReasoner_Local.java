@@ -281,7 +281,16 @@ public class TaskReasoner_Local extends ArbiAgent {
 
 		return true;
 	}
-
+	
+	public void sleep(int count) {
+		try {
+			Thread.sleep(count);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public void parsePlan(String string) {
 		planLoader.parsePlan(string);
 	}

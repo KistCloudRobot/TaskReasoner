@@ -45,6 +45,16 @@ PLAN PERFORM ThrowGoal($goalName) {
 	UTILITY : 10;
 }
 
+plan perform ThrowGoalWithType($goalName,$type){
+	ID: "ThrowGoalType"
+	PRECONDITION:
+		FACT TaskReasoner($reasoner);
+	Body:
+		$data = "(" + $goalName + "  $worker $goalID  \"" + $type + "\" )";
+		$reasoner.sendToTM("PostGoal", $data);
+		PERFORM WaitGoalComplete($goalName);
+}
+
 PLAN PERFORM ThrowGoal($goalName) {
 	ID : "ThrowGoalPalletTransportedRequestedToOfStoredCargo"
 	PRECONDITION :
