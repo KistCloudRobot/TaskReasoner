@@ -82,6 +82,7 @@ PLAN PERFORM ThrowWorkflow() {
 	ID : "LogisticManagerWorkflow"
 	PRECONDITION :
 		fact PrepareStoring($location);
+		
 		FACT TaskReasoner($reasoner);
 	BODY :
 		System.out.println("\n\n workflow start PREPARE_STORING \n\n");
@@ -90,11 +91,17 @@ PLAN PERFORM ThrowWorkflow() {
 		System.out.println("CargoStoringPrepared finalized");
 		PERFORM WaitGoalComplete("CargoStoringPreparedRequestedFrom");
 		
+		PERFORM ThrowGoalWithType("PalletTransportedRequestedTo","UnstoredCargoAndStoredCargo");
+
+
+		System.out.println("goal thrown");
 		
-		PERFORM ThrowGoal("PalletTransportedRequestedTo");
-		System.out.println("PalletTransportedRequested start");
+		PERFORM WaitGoalComplete("PalletTransportedRequestedTo");
+		
+		
 		PERFORM WaitGoalComplete("PalletTransportedReportedFrom");
 		System.out.println("PalletTransportedRequested finalized");
+	
 		PERFORM ThrowGoal("CargoStoringPreparedReportedTo");
 		System.out.println("CargoStoringPreparedReportedTo start");
 		
@@ -104,6 +111,20 @@ PLAN PERFORM ThrowWorkflow() {
 		//PERFORM FinalizeService($serviceName, $cmd);
 		
 	UTILITY : 50;
+}
+
+
+PLAN PERFORM ThrowWorkflow() {
+	ID : "LogisticManagerWorkflowPrepareStoringNotExecuted"
+	PRECONDITION :
+		fact PrepareStoring($location);
+		fact PerformedPrepareStoring();
+	BODY :
+		System.out.println("\n\n workflow start PREPARE_STORING Not Executed\n\n");
+		
+		//PERFORM FinalizeService($serviceName, $cmd);
+		
+	UTILITY : 60;
 }
 
 PLAN PERFORM ThrowWorkflow() {
@@ -222,33 +243,54 @@ PLAN PERFORM ThrowWorkflow() {
 	UTILITY : 60;
 }
 PLAN PERFORM ThrowWorkflow() {
+	ID : "LogisticManagerWorkflow3NW"
+	PRECONDITION :
+		FACT Unstoring($location);
+		fact PerformedPrepareUnstoring();
+	BODY :
+		System.out.println("\n\n workflow start PASS Prepare Unstoring \n\n");
+	UTILITY : 60;
+}
+
+PLAN PERFORM ThrowWorkflow() {
 	ID : "LogisticManagerWorkflow5"
 	PRECONDITION :
 		FACT Unstoring($location);
-		FACT Storing($sLocation);
+		Fact PrepareStoring($pLocation);
+		Fact PrepareUnstoring($psLocation);
+
 	BODY :
 		System.out.println("\n\n workflow start BOTH UNstoring Storing \n\n");
 		
-		System.out.println("Unstoring and Storing both executing");
-		assert PerformedStoring();
-		assert PerformedUnstoring();
-		PERFORM ThrowGoal("StoredCargoRequestedTo");
 		
-		PERFORM WaitGoalComplete("StoredCargoRequestedFrom");
+		assert PerformedPrepareStoring();
+		assert PerformedUnstoring();
+		assert PerformedPrepareUnstoring();
+		
+		PERFORM ThrowGoal("CargoUnstoringPreparedRequestedTo");
+		
+		perform WaitGoalComplete("CargoUnstoringPreparedRequestedFrom");
+		
+		PERFORM ThrowGoal("CargoStoringPreparedRequestedTo");
+
+		PERFORM WaitGoalComplete("CargoStoringPreparedRequestedFrom");
 		
 		PERFORM ThrowGoal("UnstoredCargoRequestedTo");
 		PERFORM WaitGoalComplete("UnstoredCargoRequestedFrom");
 		
-		PERFORM ThrowGoalWithType("PalletTransportedRequestedTo","UnstoredCargoAndStoredCargo");
+		PERFORM ThrowGoalWithType("PalletTransportedRequestedTo","UnstoredCargoAndCargoStoringPrepared");
 		PERFORM ThrowGoalWithType("MovingRackTransportedRequestedTo","UnstoredCargo");
+		PERFORM ThrowGoalWithType("MovingRackTransportedRequestedTo","CargoUnstoringPrepared");
 		
 
-
-		
 		System.out.println("goal thrown");
 		
-
+		PERFORM WaitGoalComplete("MovingRackTransportedRequestedTo");
+		
 		PERFORM WaitGoalComplete("MovingRackTransportedRequestedFrom");
+		PERFORM WaitGoalComplete("PalletTransportedReportedFrom");
+		
+		PERFORM ThrowGoalWithType("PalletTransportedRequestedTo","CargoUnstoringPrepared");
 		PERFORM WaitGoalComplete("PalletTransportedReportedFrom");
 		
 		PERFORM ThrowGoal("UnstoredCargoReportedTo");
