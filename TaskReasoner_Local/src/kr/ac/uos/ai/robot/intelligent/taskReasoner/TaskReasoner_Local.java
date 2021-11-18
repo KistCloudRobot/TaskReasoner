@@ -106,7 +106,19 @@ public class TaskReasoner_Local extends ArbiAgent {
 		TASKREASONER_ADDRESS = ARBI_PREFIX + ENV_AGENT_NAME + "/TaskReasoner";
 
 	}
-
+	
+	public String removeQuotationMark(Object input) {
+		String sData = input.toString();
+		
+		System.out.println("input string to remove quotation : " + sData);
+		
+		if(sData.startsWith("\"")) {
+			sData = sData.substring(1,sData.length()-1);
+		}
+		
+		return sData;
+	}
+	
 	private void config() {
 
 		try {

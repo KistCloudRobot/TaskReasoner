@@ -1,10 +1,13 @@
 
 PLAN Conclude GoalFinished($goalName, $caller,$goalID,$goal) {
 	ID : "GoalFinishedHandle"
-
+	precondition:
+		FACT TaskReasoner($reasoner);
 	BODY :
+		retract GoalComplete($goalName);
+		$goalName = $reasoner.removeQuotationMark($goalName);
 		System.out.println("Goal received : " + $goalName);
 		assert GoalComplete($goalName);	
-		retract GoalFinished;
+		retract GoalFinished($goalName, $caller,$goalID,$goal);
 	UTILITY : 100000000;
 }
