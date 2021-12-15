@@ -258,7 +258,7 @@ PLAN PERFORM ThrowWorkflow() {
 		FACT Unstoring($location);
 		Fact PrepareStoring($pLocation);
 		Fact PrepareUnstoring($psLocation);
-
+		FACT TaskReasoner($reasoner);
 	BODY :
 		System.out.println("\n\n workflow start BOTH UNstoring Storing \n\n");
 		
@@ -280,6 +280,9 @@ PLAN PERFORM ThrowWorkflow() {
 		
 		PERFORM ThrowGoalWithType("PalletTransportedRequestedTo","UnstoredCargoAndCargoStoringPrepared");
 		PERFORM ThrowGoalWithType("MovingRackTransportedRequestedTo","UnstoredCargo");
+		
+		$reasoner.sleep(3000);
+		
 		PERFORM ThrowGoalWithType("MovingRackTransportedRequestedTo","CargoUnstoringPrepared");
 		
 
