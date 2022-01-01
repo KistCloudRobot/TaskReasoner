@@ -5,29 +5,22 @@ PREFIXES:
 PLAN PERFORM PrepareStoringStation19() {
 	ID : "LogisticManagerWorkflowPrepareStoringStation19"
 	PRECONDITION :
-		fact PrepareStoring($location);
-		$location == "station19";
 		FACT TaskReasoner($reasoner);
 	BODY :
 		System.out.println("\n\n service start PREPARE_STORING at station19 \n\n");
 		
-		PERFORM RequestFlowPrepareStoringStation19();
+		POST PERFORM RequestFlowPrepareStoringStation19();
 		
-		PERFORM ReportFlowPrepareStoringStation19();
-		
-		RETRACT PrepareStoring($location);
+		POST PERFORM ReportFlowPrepareStoringStation19();
 		
 		System.out.println("PrepareStoringStation19 finished!");
-		//PERFORM FinalizeService($serviceName, $cmd);
 		
-	UTILITY : 100;
+	UTILITY : 50;
 }
 
-PLAN PERFORM RequestFlowPrepareStoringStation19() {
+PLAN ACHIEVE RequestFlowPrepareStoringStation19() {
 	ID : "PrepareStoringStation19RequestFlow"
 	PRECONDITION :
-		fact PrepareStoring($location);
-		$location == "station19";
 		FACT TaskReasoner($reasoner);
 	BODY :
 		System.out.println("\n requestflow START PREPARE_STORING station19 \n");
@@ -41,12 +34,11 @@ PLAN PERFORM RequestFlowPrepareStoringStation19() {
 	UTILITY : 100;
 }
 
-PLAN PERFORM RequestFlowPrepareStoringStation19() {
+PLAN PERFORM ReportFlowPrepareStoringStation19() {
 	ID : "PrepareStoringStation19ReportFlow"
 	PRECONDITION :
-		fact PrepareStoring($location);
-		$location == "station19";
 		FACT TaskReasoner($reasoner);
+		FACT RequestFlowPrepareStoringStation19();
 	BODY :
 		System.out.println("\n reportflow START PREPARE_STORING station19 \n");
 		
@@ -58,6 +50,8 @@ PLAN PERFORM RequestFlowPrepareStoringStation19() {
 		
 		PERFORM WaitGoalComplete("CargoStoringPreparedReportedFrom");
 		
+		RETRACT RequestFlowPrepareStoringStation19();
 		System.out.println("\n reportflow END PREPARE_STORING station19 \n");
-	UTILITY : 70;
+		
+	UTILITY : 20;
 }

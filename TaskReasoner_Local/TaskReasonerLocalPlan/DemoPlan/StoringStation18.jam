@@ -5,28 +5,22 @@ PREFIXES:
 PLAN PERFORM StoringStation18() {
 	ID : "LogisticManagerWorkflowStoringStation18"
 	PRECONDITION :
-		fact Storing($location);
-		$location == "station18";
 		FACT TaskReasoner($reasoner);
 	BODY :
-		System.out.println("\n\n service start PREPARE_STORING at station18 \n\n");
+		System.out.println("\n service start PREPARE_STORING at station18 \n");
 		
-		PERFORM RequestFlowStoringStation18();
+		POST PERFORM RequestFlowStoringStation18();
 		
-		PERFORM ReportFlowStoringStation18();
-		
-		RETRACT Storing($location);
+		POST PERFORM ReportFlowStoringStation18();
 		
 		System.out.println("StoringStation18 finished!");
 		
-	UTILITY : 100;
+	UTILITY : 20;
 }
 
-PLAN PERFORM RequestFlowStoringStation18() {
+PLAN ACHIEVE RequestFlowStoringStation18() {
 	ID : "StoringStation18RequestFlow"
 	PRECONDITION :
-		fact Storing($location);
-		$location == "station18";
 		FACT TaskReasoner($reasoner);
 	BODY :
 		System.out.println("\n requestflow START STORING station18 \n");
@@ -35,17 +29,15 @@ PLAN PERFORM RequestFlowStoringStation18() {
 		
 		PERFORM WaitGoalComplete("StoredCargoRequestedFrom");
 		PERFORM ThrowGoalWithType("PalletTransportedRequestedTo","StoredCargo");
-
 		
 		System.out.println("\n requestflow END STORING station18 \n");
 	UTILITY : 100;
 }
 
-PLAN PERFORM RequestFlowStoringStation18() {
+PLAN PERFORM ReportFlowStoringStation18() {
 	ID : "StoringStation18ReportFlow"
 	PRECONDITION :
-		fact Storing($location);
-		$location == "station18";
+		FACT RequestFlowStoringStation18();
 		FACT TaskReasoner($reasoner);
 	BODY :
 		System.out.println("\n reportflow START STORING station18 \n");
@@ -53,13 +45,12 @@ PLAN PERFORM RequestFlowStoringStation18() {
 		
 		PERFORM WaitGoalComplete("PalletTransportedReportedFrom");
 		
-		
 		PERFORM ThrowGoal("StoredCargoReportedTo");
-		//PERFORM FinalizeService($serviceName, $taskType);
 		
 		PERFORM WaitGoalComplete("StoredCargoReportedFrom");
 		
+		RETRACT RequestFlowStoringStation18();
 		System.out.println("\n reportflow END STORING station18 \n");
 		
-	UTILITY : 70;
+	UTILITY : 30;
 }

@@ -99,7 +99,7 @@ public class TaskReasoner_Local extends ArbiAgent {
 		//ENV_AGENT_NAME = System.getenv("AGENT");
 		//ENV_ROBOT_NAME = System.getenv("ROBOT");
 		
-		ENV_JMS_BROKER = "tcp://172.16.165.222:61313";
+		ENV_JMS_BROKER = "tcp://172.16.165.106:61313";
 		ENV_AGENT_NAME = "Local";
 
 		TASKMANAGER_ADDRESS = ARBI_PREFIX + ENV_AGENT_NAME + "/TaskManager";
@@ -229,7 +229,7 @@ public class TaskReasoner_Local extends ArbiAgent {
 	@Override
 	public void onData(String sender, String data) {
 		try {
-			System.out.println("data  = " + data);
+			//System.out.println("data  = " + data);
 			RecievedMessage message = new RecievedMessage(sender, data);
 
 			messageQueue.put(message);
@@ -256,7 +256,7 @@ public class TaskReasoner_Local extends ArbiAgent {
 
 				gl = GLFactory.newGLFromGLString(data);
 
-				System.out.println("message from " + sender  + " dequeued : " + gl.toString());
+				//System.out.println("message from " + sender  + " dequeued : " + gl.toString());
 				glMessageManager.assertContext(gl.getExpression(0).asGeneralizedList());
 				
 

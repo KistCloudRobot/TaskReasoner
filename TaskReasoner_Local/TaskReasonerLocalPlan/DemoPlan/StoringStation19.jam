@@ -2,64 +2,56 @@ PREFIXES:
 	PREFIX arbi: <http://www.arbi.com//ontologies#>;
 	PREFIX isro: <http://www.arbi.com//BuiltInPlan#>;		
 	
-PLAN PERFORM StoringStation18() {
-	ID : "LogisticManagerWorkflowStoringStation18"
+PLAN PERFORM StoringStation19() {
+	ID : "LogisticManagerWorkflowStoringStation19"
 	PRECONDITION :
-		fact Storing($location);
-		$location == "station18";
 		FACT TaskReasoner($reasoner);
 	BODY :
-		System.out.println("\n\n service start PREPARE_STORING at station18 \n\n");
+		System.out.println("\n\n service start STORING at Station19 \n\n");
 		
-		PERFORM RequestFlowStoringStation18();
+		POST PERFORM RequestFlowStoringStation19();
 		
-		PERFORM ReportFlowStoringStation18();
+		POST PERFORM ReportFlowStoringStation19();
 		
-		RETRACT Storing($location);
+		System.out.println("StoringStation19 finished!");
 		
-		System.out.println("StoringStation18 finished!");
-		
-	UTILITY : 100;
+	UTILITY : 20;
 }
 
-PLAN PERFORM RequestFlowStoringStation18() {
-	ID : "StoringStation18RequestFlow"
+PLAN ACHIEVE RequestFlowStoringStation19() {
+	ID : "StoringStation19RequestFlow"
 	PRECONDITION :
-		fact Storing($location);
-		$location == "station18";
 		FACT TaskReasoner($reasoner);
 	BODY :
-		System.out.println("\n requestflow START STORING station18 \n");
+		System.out.println("\n requestflow START STORING Station19 \n");
 		
 		PERFORM ThrowGoal("StoredCargoRequestedTo");
 		
 		PERFORM WaitGoalComplete("StoredCargoRequestedFrom");
+		
 		PERFORM ThrowGoalWithType("PalletTransportedRequestedTo","StoredCargo");
 
-		
-		System.out.println("\n requestflow END STORING station18 \n");
+		System.out.println("\n requestflow END STORING Station19 \n");
 	UTILITY : 100;
 }
 
-PLAN PERFORM RequestFlowStoringStation18() {
-	ID : "StoringStation18ReportFlow"
+PLAN PERFORM ReportFlowStoringStation19() {
+	ID : "StoringStation19ReportFlow"
 	PRECONDITION :
-		fact Storing($location);
-		$location == "station18";
+		FACT RequestFlowStoringStation19();
 		FACT TaskReasoner($reasoner);
 	BODY :
-		System.out.println("\n reportflow START STORING station18 \n");
-		
+		System.out.println("\n reportflow START STORING Station19 \n");
 		
 		PERFORM WaitGoalComplete("PalletTransportedReportedFrom");
 		
-		
 		PERFORM ThrowGoal("StoredCargoReportedTo");
-		//PERFORM FinalizeService($serviceName, $taskType);
 		
 		PERFORM WaitGoalComplete("StoredCargoReportedFrom");
 		
-		System.out.println("\n reportflow END STORING station18 \n");
+		RETRACT RequestFlowStoringStation19();
 		
-	UTILITY : 70;
+		System.out.println("\n reportflow END STORING Station19 \n");
+		
+	UTILITY : 30;
 }

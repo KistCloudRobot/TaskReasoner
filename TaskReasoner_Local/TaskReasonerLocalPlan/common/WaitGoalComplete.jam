@@ -7,8 +7,8 @@ PLAN PERFORM WaitGoalComplete($goal) {
 	PRECONDITION :
 		FACT GoalComplete($goal);
 	BODY :
-		System.out.println("GoalCompleted! : " + $goal);
+		//System.out.println("GoalCompleted! : " + $goal);
 		RETRACT GoalComplete($goal);
 		
-	UTILITY : 90;
+	UTILITY : 50;
 }

@@ -14,7 +14,7 @@ public class TaskReasonerDataSource extends DataSource{
 	@Override
 	public void onNotify(String content) {
 
-		System.out.println("Notified!" + content);
+		//System.out.println("Notified!" + content);
 		taskReasoner.onNotify("LTM", content);
 	
 	}

@@ -11,10 +11,9 @@ PLAN Conclude PersonCall($callID,$location,$cmd){
 	body:
 	
 		System.out.println("PrepareStoring station18 personcall start");
-		ASSERT PrepareStoring($location);
 		POST PERFORM PrepareStoringStation18();
 		RETRACT PersonCall($callID,$location,$cmd);
-	utility : 1000;
+	utility : 2000;
 }
 
 PLAN Conclude PersonCall($callID,$location,$cmd){
@@ -26,10 +25,9 @@ PLAN Conclude PersonCall($callID,$location,$cmd){
 	body:
 	
 		System.out.println("PrepareStoring station19 personcall start");
-		ASSERT PrepareStoring($location);
 		POST PERFORM PrepareStoringStation19();
 		RETRACT PersonCall($callID,$location,$cmd);
-	utility : 1000;
+	utility : 2000;
 }
 
 PLAN Conclude PersonCall($callID,$location,$cmd){
@@ -41,10 +39,9 @@ PLAN Conclude PersonCall($callID,$location,$cmd){
 	body:
 	
 		System.out.println("Storing station18 personcall start");
-		ASSERT Storing($location);
 		POST PERFORM StoringStation18();
 		RETRACT PersonCall($callID,$location,$cmd);
-	utility : 1000;
+	utility : 2000;
 }
 
 PLAN Conclude PersonCall($callID,$location,$cmd){
@@ -56,8 +53,35 @@ PLAN Conclude PersonCall($callID,$location,$cmd){
 	body:
 	
 		System.out.println("Storing station19 personcall start");
-		ASSERT Storing($location);
 		POST PERFORM StoringStation19();
 		RETRACT PersonCall($callID,$location,$cmd);
-	utility : 1000;
+	utility : 2000;
+}
+
+PLAN Conclude PersonCall($callID,$location,$cmd){
+	ID : "personCallConcludePrepareUnstoringStation22"
+	precondition:
+		FACT TaskReasoner($reasoner);
+		$cmd == "PrepareUnstoring";
+		$location == "station22";
+	body:
+	
+		System.out.println("PrepareUnstoring station22 personcall start");
+		POST PERFORM PrepareUnstoring();
+		RETRACT PersonCall($callID,$location,$cmd);
+	utility : 2000;
+}
+
+PLAN Conclude PersonCall($callID,$location,$cmd){
+	ID : "personCallConcludeUnstoringStation22"
+	precondition:
+		FACT TaskReasoner($reasoner);
+		$cmd == "Unstoring";
+		$location == "station22";
+	body:
+	
+		System.out.println("Unstoring station22 personcall start");
+		POST PERFORM Unstoring();
+		RETRACT PersonCall($callID,$location,$cmd);
+	utility : 2000;
 }
