@@ -65,7 +65,7 @@ PLAN PERFORM ThrowGoal($goalName) {
 
 
 PLAN PERFORM ThrowGoal($goalName) {
-	ID : "ThrowGoalCargoUnstoringPreparedReportedTo"
+	ID : "ThrowGoalCargoUnstoringPreparedReportedTo11"
 	PRECONDITION :
 		$goalName == "CargoUnstoringPreparedReportedTo";
 		FACT PalletTransportedReportedFrom($worker1, $goal1ID, $goal1);
@@ -81,7 +81,7 @@ PLAN PERFORM ThrowGoal($goalName) {
 
 
 PLAN PERFORM ThrowGoal($goalName) {
-	ID : "ThrowGoalUnstoredCargoReportedTo"
+	ID : "ThrowGoalUnstoredCargoReportedTo11"
 	PRECONDITION :
 		$goalName == "CargoUnstoringPreparedReportedTo";
 		FACT PalletTransportedReportedFrom($worker1, $goal1ID, $goal1);

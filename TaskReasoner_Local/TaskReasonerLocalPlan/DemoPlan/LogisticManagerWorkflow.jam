@@ -19,7 +19,7 @@ PLAN Conclude PersonCall($callID,$location,$cmd){
 		$cmd == "PrepareStoring";
 	body:
 	
-		System.out.println("personcall start");
+		System.out.println("PrepareStoring personcall start");
 		assert PrepareStoring($location);
 		
 		post perform PostThrowWorkflow();
@@ -34,7 +34,7 @@ PLAN Conclude PersonCall($callID,$location,$cmd){
 		FACT TaskReasoner($reasoner);
 		$cmd == "Storing";
 	body:
-		System.out.println("personcall start");
+		System.out.println("Storing personcall start");
 		assert Storing($location);
 		post perform PostThrowWorkflow();
 		retract PersonCall($callID,$location,$cmd);
@@ -46,7 +46,7 @@ PLAN Conclude PersonCall($callID,$location,$cmd){
 		FACT TaskReasoner($reasoner);
 		$cmd == "PrepareUnstoring";
 	body:
-		System.out.println("personcall start");
+		System.out.println("PrepareUnstoring personcall start");
 		
 		assert PrepareUnstoring($location);
 		post perform PostThrowWorkflow();
@@ -59,7 +59,7 @@ PLAN Conclude PersonCall($callID,$location,$cmd){
 		FACT TaskReasoner($reasoner);
 		$cmd == "Unstoring";
 	body:
-		System.out.println("personcall start");
+		System.out.println("Unstoring personcall start");
 		
 		assert Unstoring($location);
 		post perform PostThrowWorkflow();
@@ -72,7 +72,7 @@ PLAN Conclude PersonCall($callID,$location,$cmd){
 	precondition:
 		FACT TaskReasoner($reasoner);
 	body:
-		System.out.println("personcall start");
+		System.out.println("personcall start?");
 		System.out.println($callID + " " + $location + " " + $cmd);
 	utility : 20;
 }
@@ -91,14 +91,11 @@ PLAN PERFORM ThrowWorkflow() {
 		System.out.println("CargoStoringPrepared finalized");
 		PERFORM WaitGoalComplete("CargoStoringPreparedRequestedFrom");
 		
-		PERFORM ThrowGoalWithType("PalletTransportedRequestedTo","UnstoredCargoAndStoredCargo");
+		PERFORM ThrowGoalWithType("PalletTransportedRequestedTo","CargoStoringPrepared");
 
 
 		System.out.println("goal thrown");
-		
-		PERFORM WaitGoalComplete("PalletTransportedRequestedTo");
-		
-		
+				
 		PERFORM WaitGoalComplete("PalletTransportedReportedFrom");
 		System.out.println("PalletTransportedRequested finalized");
 	
@@ -106,8 +103,10 @@ PLAN PERFORM ThrowWorkflow() {
 		System.out.println("CargoStoringPreparedReportedTo start");
 		
 		PERFORM WaitGoalComplete("CargoStoringPreparedReportedFrom");
-		System.out.println("CargoStoringPreparedReportedTo finalized");
 		
+		RETRACT PrepareStoring($location);
+		
+		System.out.println("CargoStoringPreparedReportedTo finalized");
 		//PERFORM FinalizeService($serviceName, $cmd);
 		
 	UTILITY : 50;
@@ -120,6 +119,8 @@ PLAN PERFORM ThrowWorkflow() {
 		fact PrepareStoring($location);
 		fact PerformedPrepareStoring();
 	BODY :
+	
+		RETRACT PerformedPrepareStoring();
 		System.out.println("\n\n workflow start PREPARE_STORING Not Executed\n\n");
 		
 		//PERFORM FinalizeService($serviceName, $cmd);
@@ -149,6 +150,7 @@ PLAN PERFORM ThrowWorkflow() {
 		PERFORM WaitGoalComplete("StoredCargoReportedFrom");
 		//PERFORM FinalizeService($serviceName, $taskType);
 		
+		RETRACT Storing($location);
 		System.out.println("StoredCargoRequest finalized");
 	UTILITY : 50;
 }
@@ -159,6 +161,7 @@ PLAN PERFORM ThrowWorkflow() {
 		fact Storing($location);
 		fact PerformedStoring();
 	BODY :
+		RETRACT PerformedStoring();
 		System.out.println("\n\n workflow start PASS STORING \n\n");
 		
 	UTILITY : 60;
@@ -185,16 +188,13 @@ PLAN PERFORM ThrowWorkflow() {
 		
 		
 		PERFORM WaitGoalComplete("PalletTransportedReportedFrom");
-		PERFORM WaitGoalComplete("MovingRackTransportedRequestedTo");
-		
-		
-		
+		PERFORM WaitGoalComplete("MovingRackTransportedReportedFrom");
 		
 		PERFORM ThrowGoal("CargoUnstoringPreparedReportedTo");
 		PERFORM WaitGoalComplete("CargoUnstoringPreparedReportedFrom");
 		
 		//PERFORM FinalizeService($serviceName, $taskType);
-		
+		RETRACT PrepareUnstoring($location);
 		System.out.println("CargoUnstoringPrepared finalized");
 	UTILITY : 50;
 }
@@ -213,21 +213,19 @@ PLAN PERFORM ThrowWorkflow() {
 		
 		PERFORM ThrowGoalWithType("PalletTransportedRequestedTo","UnstoredCargo");
 
-		PERFORM ThrowGoalWithType("MovingRackTransportedRequestedTo","UnstoredCargo");
-
-
-		
-		
+		PERFORM ThrowGoalWithType("MovingRackTransportedRequestedTo","UnstoredCargo");		
 		System.out.println("goal thrown");
 		
-		PERFORM WaitGoalComplete("MovingRackTransportedRequestedFrom");
 		PERFORM WaitGoalComplete("PalletTransportedReportedFrom");
 		
+		PERFORM WaitGoalComplete("MovingRackTransportedReportedFrom");
+		
+		System.out.println("goal throw");
 		PERFORM ThrowGoal("UnstoredCargoReportedTo");
 		PERFORM WaitGoalComplete("UnstoredCargoReportedFrom");
 		
 		//PERFORM FinalizeService($serviceName, $taskType);
-		
+		RETRACT Unstoring($location);
 		System.out.println("unstored cargo request finalized");
 				
 	UTILITY : 50;
@@ -238,6 +236,7 @@ PLAN PERFORM ThrowWorkflow() {
 		FACT Unstoring($location);
 		fact PerformedUnstoring();
 	BODY :
+		RETRACT PerformedUnstoring();
 		System.out.println("\n\n workflow start PASS Unstoring \n\n");
 		
 	UTILITY : 60;
@@ -245,9 +244,10 @@ PLAN PERFORM ThrowWorkflow() {
 PLAN PERFORM ThrowWorkflow() {
 	ID : "LogisticManagerWorkflow3NW"
 	PRECONDITION :
-		FACT Unstoring($location);
+		FACT PrepareUnstoring($location);
 		fact PerformedPrepareUnstoring();
 	BODY :
+		RETRACT PerformedPrepareUnstoring();
 		System.out.println("\n\n workflow start PASS Prepare Unstoring \n\n");
 	UTILITY : 60;
 }
@@ -301,6 +301,9 @@ PLAN PERFORM ThrowWorkflow() {
 		
 		//PERFORM FinalizeService($serviceName, $taskType);
 		
+		RETRACT Unstoring($location);
+		RETRACT PrepareStoring($pLocation);
+		RETRACT PrepareUnstoring($psLocation);
 		System.out.println("unstored cargo request finalized");
 				
 	UTILITY : 100;
@@ -355,6 +358,56 @@ PLAN PERFORM ThrowGoal($goalName) {
 	UTILITY : 10;
 }
 
+
+
+
+PLAN PERFORM ThrowGoal($goalName) {
+	ID : "ThrowGoalCargoStoringPreparedReportedTo"
+	PRECONDITION :
+		$goalName == "CargoStoringPreparedReportedTo";
+		FACT TaskReasoner($reasoner);
+	BODY :
+		$data = "(CargoStoringPreparedReportedTo $worker $goalID $goal)";
+		$reasoner.sendToTM("PostGoal", $data);
+		PERFORM WaitGoalComplete($goalName);
+	UTILITY : 10;
+}
+
+PLAN PERFORM ThrowGoal($goalName) {
+	ID : "ThrowGoalStoredCargoReportedTo"
+	PRECONDITION :
+		$goalName == "StoredCargoReportedTo";
+		FACT TaskReasoner($reasoner);
+	BODY :
+		$data = "(StoredCargoReportedTo $manager $goalID $goal)";
+		$reasoner.sendToTM("PostGoal", $data);
+		PERFORM WaitGoalComplete($goalName);
+	UTILITY : 10;
+}
+
+PLAN PERFORM ThrowGoal($goalName) {
+	ID : "ThrowGoalUnstoredCargoReportedTo"
+	PRECONDITION :
+		$goalName == "UnstoredCargoReportedTo";
+		FACT TaskReasoner($reasoner);
+	BODY :
+		$data = "(UnstoredCargoReportedTo $manager $goalID $goal)";
+		$reasoner.sendToTM("PostGoal", $data);
+		PERFORM WaitGoalComplete($goalName);
+	UTILITY : 10;
+}
+
+PLAN PERFORM ThrowGoal($goalName) {
+	ID : "ThrowGoalCargoUnstoringPreparedReportedTo"
+	PRECONDITION :
+		$goalName == "CargoUnstoringPreparedReportedTo";
+		FACT TaskReasoner($reasoner);
+	BODY :
+		$data = "(CargoUnstoringPreparedReportedTo $manager $goalID $goal)";
+		$reasoner.sendToTM("PostGoal", $data);
+		PERFORM WaitGoalComplete($goalName);
+	UTILITY : 10;
+}
 
 
 PLAN PERFORM FinalizeService(){
