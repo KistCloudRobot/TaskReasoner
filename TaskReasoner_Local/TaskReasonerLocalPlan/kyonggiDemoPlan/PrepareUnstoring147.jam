@@ -24,11 +24,7 @@ PLAN ACHIEVE RequestFlowPrepareUnstoringStation147() {
 	BODY :
 		System.out.println("\n requestflow START PREPARE_UNSTORING station147 \n");
 		
-		PERFORM ThrowGoal("CargoUnstoringPreparedRequestedTo");
-		
-		perform WaitGoalComplete("CargoUnstoringPreparedRequestedFrom");
-			
-		PERFORM ThrowGoalWithType("PalletTransportedRequestedTo","CargoUnstoringPrepared");
+		PERFORM ThrowGoal("PalletTransportedRequestedTo");
 		
 		System.out.println("\n requestflow END PREPARE_UNSTORING station147 \n");
 	UTILITY : 100;

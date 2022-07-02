@@ -23,12 +23,8 @@ PLAN ACHIEVE RequestFlowPrepareUnstoringStation146() {
 		FACT TaskReasoner($reasoner);
 	BODY :
 		System.out.println("\n requestflow START PREPARE_UNSTORING station146 \n");
-		
-		PERFORM ThrowGoal("CargoUnstoringPreparedRequestedTo");
-		
-		perform WaitGoalComplete("CargoUnstoringPreparedRequestedFrom");
-			
-		PERFORM ThrowGoalWithType("PalletTransportedRequestedTo","CargoUnstoringPrepared");
+				
+		PERFORM ThrowGoal("PalletTransportedRequestedTo");
 		
 		System.out.println("\n requestflow END PREPARE_UNSTORING station146 \n");
 	UTILITY : 100;
@@ -41,7 +37,6 @@ PLAN PERFORM ReportFlowPrepareUnstoringStation146() {
 		FACT TaskReasoner($reasoner);
 	BODY :
 		System.out.println("\n reportflow START PREPARE_UNSTORING station146 \n");
-		
 		
 		PERFORM WaitGoalComplete("PalletTransportedReportedFrom");
 		

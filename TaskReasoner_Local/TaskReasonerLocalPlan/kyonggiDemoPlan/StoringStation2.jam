@@ -25,7 +25,7 @@ PLAN ACHIEVE RequestFlowStoringStation2() {
 	BODY :
 		System.out.println("\n requestflow START STORING Station2 \n");
 		
-		PERFORM ThrowGoalWithType("PalletTransportedRequestedTo","StoredCargo");
+		PERFORM ThrowGoal("PalletTransportedRequestedTo");
 
 		System.out.println("\n requestflow END STORING Station2 \n");
 	UTILITY : 100;

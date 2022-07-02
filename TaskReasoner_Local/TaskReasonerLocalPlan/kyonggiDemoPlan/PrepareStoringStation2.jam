@@ -24,8 +24,7 @@ PLAN ACHIEVE RequestFlowPrepareStoringStation2() {
 		FACT TaskReasoner($reasoner);
 	BODY :
 		System.out.println("\n requestflow START PREPARE_STORING station2 \n");
-		
-		PERFORM ThrowGoalWithType("PalletTransportedRequestedTo","CargoStoringPrepared");
+		PERFORM ThrowGoal("PalletTransportedRequestedTo");
 		
 		System.out.println("\n requestflow END PREPARE_STORING station2 \n");
 	UTILITY : 100;

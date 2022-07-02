@@ -26,8 +26,7 @@ PLAN ACHIEVE RequestFlowUnstoringStation146() {
 	BODY :
 		System.out.println("\n requestflow START UNSTORING station146 \n");
 				
-		PERFORM ThrowGoalWithType("PalletTransportedRequestedTo","UnstoredCargo");
-
+		PERFORM ThrowGoal("PalletTransportedRequestedTo");
 		System.out.println("\n requestflow END UNSTORING station146 \n");
 	UTILITY : 100;
 }
