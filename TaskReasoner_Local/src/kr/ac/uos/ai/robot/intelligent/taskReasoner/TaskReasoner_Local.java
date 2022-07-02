@@ -43,9 +43,9 @@ public class TaskReasoner_Local extends ArbiAgent {
 	public static final String ARBI_PREFIX = "www.arbi.com/";
 
 	private static String brokerURI = "tcp://172.16.165.222:61313";
-	private static String TASKREASONER_ADDRESS;
+	private static String TASKREASONER_ADDRESS = "www.arbi.com/TaskReasoner";
 	private static int brokerType = 2;
-	private static String TASKMANAGER_ADDRESS;
+	private static String TASKMANAGER_ADDRESS  = "www.arbi.com/TaskManager";
 
 	private static final String agentURIPrefix = "agent://";
 	private static final String dsURIPrefix = "ds://";
@@ -94,16 +94,13 @@ public class TaskReasoner_Local extends ArbiAgent {
 	}
 
 	public void initAddress() {
-		String ip = System.getenv("JMS_BROKER");
+		//String ip = System.getenv("JMS_BROKER");
 		//ENV_JMS_BROKER = "tcp://" + ip ;
 		//ENV_AGENT_NAME = System.getenv("AGENT");
 		//ENV_ROBOT_NAME = System.getenv("ROBOT");
 		
 		ENV_JMS_BROKER = "tcp://172.16.165.106:61313";
-		ENV_AGENT_NAME = "Local";
 
-		TASKMANAGER_ADDRESS = ARBI_PREFIX + ENV_AGENT_NAME + "/TaskManager";
-		TASKREASONER_ADDRESS = ARBI_PREFIX + ENV_AGENT_NAME + "/TaskReasoner";
 
 	}
 

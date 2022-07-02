@@ -1,0 +1,116 @@
+PREFIXES:
+	PREFIX arbi: <http://www.arbi.com//ontologies#>;
+	PREFIX isro: <http://www.arbi.com//BuiltInPlan#>;		
+
+PLAN Conclude PersonCall($callID,$location,$cmd){
+	ID : "personCallConcludePrepareStoringStation1"
+	precondition:
+		FACT TaskReasoner($reasoner);
+		$cmd == "PrepareStoring";
+		$location == "station1";
+	body:
+	
+		System.out.println("PrepareStoring station1 personcall start");
+		POST PERFORM PrepareStoringStation1();
+		RETRACT PersonCall($callID,$location,$cmd);
+	utility : 2000;
+}
+
+PLAN Conclude PersonCall($callID,$location,$cmd){
+	ID : "personCallConcludePrepareStoringStation2"
+	precondition:
+		FACT TaskReasoner($reasoner);
+		$cmd == "PrepareStoring";
+		$location == "station2";
+	body:
+	
+		System.out.println("PrepareStoring station2 personcall start");
+		POST PERFORM PrepareStoringStation2();
+		RETRACT PersonCall($callID,$location,$cmd);
+	utility : 2000;
+}
+
+PLAN Conclude PersonCall($callID,$location,$cmd){
+	ID : "personCallConcludeStoringStation1"
+	precondition:
+		FACT TaskReasoner($reasoner);
+		$cmd == "Storing";
+		$location == "station1";
+	body:
+	
+		System.out.println("Storing station1 personcall start");
+		POST PERFORM StoringStation1();
+		RETRACT PersonCall($callID,$location,$cmd);
+	utility : 2000;
+}
+
+PLAN Conclude PersonCall($callID,$location,$cmd){
+	ID : "personCallConcludeStoringStation2"
+	precondition:
+		FACT TaskReasoner($reasoner);
+		$cmd == "Storing";
+		$location == "station2";
+	body:
+	
+		System.out.println("Storing station2 personcall start");
+		POST PERFORM StoringStation2();
+		RETRACT PersonCall($callID,$location,$cmd);
+	utility : 2000;
+}
+
+PLAN Conclude PersonCall($callID,$location,$cmd){
+	ID : "personCallConcludePrepareUnstoringStation146"
+	precondition:
+		FACT TaskReasoner($reasoner);
+		$cmd == "PrepareUnstoring";
+		$location == "station146";
+	body:
+	
+		System.out.println("PrepareUnstoring station146 personcall start");
+		POST PERFORM PrepareUnstoringStation146();
+		RETRACT PersonCall($callID,$location,$cmd);
+	utility : 2000;
+}
+
+PLAN Conclude PersonCall($callID,$location,$cmd){
+	ID : "personCallConcludeUnstoringStation146"
+	precondition:
+		FACT TaskReasoner($reasoner);
+		$cmd == "Unstoring";
+		$location == "station146";
+	body:
+	
+		System.out.println("Unstoring station146 personcall start");
+		POST PERFORM UnstoringStation146();
+		RETRACT PersonCall($callID,$location,$cmd);
+	utility : 2000;
+}
+
+PLAN Conclude PersonCall($callID,$location,$cmd){
+	ID : "personCallConcludePrepareUnstoringStation147"
+	precondition:
+		FACT TaskReasoner($reasoner);
+		$cmd == "PrepareUnstoring";
+		$location == "station147";
+	body:
+	
+		System.out.println("PrepareUnstoring station147 personcall start");
+		POST PERFORM PrepareUnstoringStation147();
+		RETRACT PersonCall($callID,$location,$cmd);
+	utility : 2000;
+}
+
+PLAN Conclude PersonCall($callID,$location,$cmd){
+	ID : "personCallConcludeUnstoringStation147"
+	precondition:
+		FACT TaskReasoner($reasoner);
+		$cmd == "Unstoring";
+		$location == "station147";
+	body:
+	
+		System.out.println("Unstoring station22 personcall start");
+		POST PERFORM UnstoringStation147();
+		RETRACT PersonCall($callID,$location,$cmd);
+	utility : 2000;
+}
+
