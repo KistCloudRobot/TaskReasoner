@@ -8,7 +8,6 @@ public class GoalPostArgument {
 	private Object[] arguments;
 	
 	public GoalPostArgument() {
-		// TODO Auto-generated constructor stub
 	}
 	
 	public String getGoalName() {
@@ -39,6 +38,17 @@ public class GoalPostArgument {
 		json.put("GoalName", goalName);
 		
 		return json.toJSONString();
+	}
+	
+	public String toGenerallizedList() {
+		StringBuilder builder = new StringBuilder();
+		
+		builder.append("(" + goalName);
+		for(Object o : arguments) {
+			builder.append(" " + o.toString());
+		}
+		builder.append(")");
+		return builder.toString();
 	}
 	
 }

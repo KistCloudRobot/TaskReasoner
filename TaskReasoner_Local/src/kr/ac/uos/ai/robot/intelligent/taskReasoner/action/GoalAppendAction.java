@@ -10,7 +10,6 @@ public class GoalAppendAction implements ActionBody{
 	
 	public GoalAppendAction(ServiceModelGenerator generator) {
 		this.generator = generator;
-		// TODO Auto-generated constructor stub
 	}
 	
 	@Override
@@ -18,7 +17,6 @@ public class GoalAppendAction implements ActionBody{
 		GoalAppendArgument argument = (GoalAppendArgument) o;
 		
 		generator.generateGoal(argument);
-		// TODO Auto-generated method stub
 		return null;
 	}
 }

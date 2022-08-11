@@ -42,9 +42,10 @@ PLAN PERFORM HandleMessage($type, $message) {
 		$reasoner.sendToLM($arg);
 		
 		$name = $glMsg.getContextName($message);
-		ASSERT HandlePolicy($name);
+		ASSERT PostWorkflow();
+		//ASSERT HandlePolicy($name);
 		
-		// ASSERT ContextAsserted();
+		//ASSERT ContextAsserted();
 	UTILITY : 1;
 }
 

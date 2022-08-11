@@ -87,29 +87,29 @@ PLAN Conclude PersonCall($callID,$location,$cmd){
 }
 
 PLAN Conclude PersonCall($callID,$location,$cmd){
-	ID : "personCallConcludePrepareUnstoringStation147"
+	ID : "personCallConcludePrepareUnstoringStation143"
 	precondition:
 		FACT TaskReasoner($reasoner);
 		$cmd == "PrepareUnstoring";
-		$location == "station147";
+		$location == "station143";
 	body:
 	
-		System.out.println("PrepareUnstoring station147 personcall start");
-		POST PERFORM PrepareUnstoringStation147();
+		System.out.println("PrepareUnstoring station143 personcall start");
+		POST PERFORM PrepareUnstoringStation143();
 		RETRACT PersonCall($callID,$location,$cmd);
 	utility : 2000;
 }
 
 PLAN Conclude PersonCall($callID,$location,$cmd){
-	ID : "personCallConcludeUnstoringStation147"
+	ID : "personCallConcludeUnstoringStation143"
 	precondition:
 		FACT TaskReasoner($reasoner);
 		$cmd == "Unstoring";
-		$location == "station147";
+		$location == "station143";
 	body:
 	
 		System.out.println("Unstoring station22 personcall start");
-		POST PERFORM UnstoringStation147();
+		POST PERFORM UnstoringStation143();
 		RETRACT PersonCall($callID,$location,$cmd);
 	utility : 2000;
 }

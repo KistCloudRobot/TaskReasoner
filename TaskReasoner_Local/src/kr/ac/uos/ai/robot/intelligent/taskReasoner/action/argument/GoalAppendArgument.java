@@ -9,12 +9,24 @@ public class GoalAppendArgument {
 	private String name;
 	private GeneralizedList glGoal;
 	private GeneralizedList precondition;
+	private String goalType;
 	
 	public GoalAppendArgument() {
 		// TODO Auto-generated constructor stub
 		name = "";
 		glGoal = null;
 		precondition = null;
+		goalType = "";
+	}
+
+
+	public String getGoalType() {
+		return goalType;
+	}
+
+
+	public void setGoalType(String goalType) {
+		this.goalType = goalType;
 	}
 
 

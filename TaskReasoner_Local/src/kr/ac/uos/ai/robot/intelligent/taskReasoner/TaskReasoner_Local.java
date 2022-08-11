@@ -1,20 +1,8 @@
 package kr.ac.uos.ai.robot.intelligent.taskReasoner;
 
-import java.io.File;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathFactory;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 
 import kr.ac.uos.ai.arbi.agent.ArbiAgent;
 import kr.ac.uos.ai.arbi.agent.ArbiAgentExecutor;
@@ -29,7 +17,6 @@ import kr.ac.uos.ai.robot.intelligent.taskReasoner.message.GLMessageManager;
 import kr.ac.uos.ai.robot.intelligent.taskReasoner.message.JsonMessageManager;
 import kr.ac.uos.ai.robot.intelligent.taskReasoner.message.RecievedMessage;
 import kr.ac.uos.ai.robot.intelligent.taskReasoner.policy.PolicyHandler;
-import kr.ac.uos.ai.robot.intelligent.taskReasoner.server.Server;
 import kr.ac.uos.ai.robot.intelligent.taskReasoner.service.ServiceModelGenerator;
 import kr.ac.uos.ai.robot.intelligent.taskReasoner.utility.UtilityCalculator;
 import uos.ai.jam.Interpreter;
@@ -42,7 +29,7 @@ public class TaskReasoner_Local extends ArbiAgent {
 	public static String ENV_ROBOT_NAME;
 	public static final String ARBI_PREFIX = "www.arbi.com/";
 
-	private static String brokerURI = "tcp://172.16.165.141:61313";
+	private static String brokerURI = "tcp://172.16.165.141:61316";
 	private static String TASKREASONER_ADDRESS = "www.arbi.com/TaskReasoner";
 	private static int brokerType = 2;
 	private static String TASKMANAGER_ADDRESS  = "www.arbi.com/TaskManager";
@@ -62,9 +49,7 @@ public class TaskReasoner_Local extends ArbiAgent {
 	private JsonMessageManager jsonMessageManager;
 	private UtilityCalculator utilityCalculator;
 
-	private int logisticManagerUtility;
-
-	private int StoringManagerUtility;
+	private int workflowID;
 
 	public TaskReasoner_Local() {
 
@@ -88,9 +73,34 @@ public class TaskReasoner_Local extends ArbiAgent {
 		loggerManager = LoggerManager.getInstance();
 
 		taskReasonerAction = new TaskReasonerAction(this, interpreter, loggerManager);
-		logisticManagerUtility = 100;
-		StoringManagerUtility = 99;
+		
+		workflowID = 0;
 		init();
+	}
+
+	public TaskReasoner_Local(String robotID, String brokerAddress) {
+		ENV_JMS_BROKER = brokerAddress;
+		interpreter = JAM.parse(new String[] { "TaskReasonerLocalPlan/boot.jam" });
+
+		ds = new TaskReasonerDataSource(this);
+
+		messageQueue = new LinkedBlockingQueue<RecievedMessage>();
+		glMessageManager = new GLMessageManager(interpreter, ds);
+		planLoader = new PlanLoader(interpreter);
+		serviceModelGenerator = new ServiceModelGenerator(this);
+		policyHandler = new PolicyHandler(this, interpreter);
+		jsonMessageManager = new JsonMessageManager(policyHandler);
+		utilityCalculator = new UtilityCalculator(interpreter);
+
+		ArbiAgentExecutor.execute(ENV_JMS_BROKER, agentURIPrefix + TASKREASONER_ADDRESS, this, brokerType);
+
+		loggerManager = LoggerManager.getInstance();
+
+		taskReasonerAction = new TaskReasonerAction(this, interpreter, loggerManager);
+		
+		workflowID = 0;
+		init();
+		
 	}
 
 	public void initAddress() {
@@ -102,42 +112,6 @@ public class TaskReasoner_Local extends ArbiAgent {
 		ENV_JMS_BROKER = "tcp://172.16.165.141:61313";
 
 
-	}
-
-	private void config() {
-
-		try {
-			File file = new File("configuration/TaskReasonerConfiguration.xml");
-			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder builder = factory.newDocumentBuilder();
-			Document doc = builder.parse(file);
-			XPathFactory xPathFactory = XPathFactory.newInstance();
-			XPath xPath = xPathFactory.newXPath();
-
-			XPathExpression _brokerURI = xPath.compile("//ServerURL");
-			Node n = (Node) _brokerURI.evaluate(doc, XPathConstants.NODE);
-			brokerURI = n.getTextContent();
-
-			XPathExpression _myURI = xPath.compile("//AgentName");
-			n = (Node) _myURI.evaluate(doc, XPathConstants.NODE);
-			TASKREASONER_ADDRESS = n.getTextContent();
-
-			XPathExpression _brokerType = xPath.compile("//BrokerType");
-			n = (Node) _brokerType.evaluate(doc, XPathConstants.NODE);
-			if (n.getTextContent().equals("ZeroMQ")) {
-				brokerType = 2;
-			} else if (n.getTextContent().equals("Apollo")) {
-				brokerType = 1;
-			}
-
-			XPathExpression _TM_URI = xPath.compile("//TaskManagerName");
-			n = (Node) _TM_URI.evaluate(doc, XPathConstants.NODE);
-			TASKMANAGER_ADDRESS = n.getTextContent();
-
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 
 	private void init() {
@@ -160,17 +134,6 @@ public class TaskReasoner_Local extends ArbiAgent {
 	}
 
 	public int getUtility(String roleName) {
-		if (roleName.equals("LogisticManager")) {
-			logisticManagerUtility -= 2;
-			System.out.println("utility : " + logisticManagerUtility);
-			return logisticManagerUtility;
-		} else if (roleName.equals("StoringCarrier")) {
-
-			StoringManagerUtility -= 2;
-			System.out.println("utility : " + StoringManagerUtility);
-			return StoringManagerUtility;
-		}
-
 		return 0;
 	}
 
@@ -219,7 +182,6 @@ public class TaskReasoner_Local extends ArbiAgent {
 
 	@Override
 	public String onRequest(String sender, String request) {
-
 		return null;
 	}
 
@@ -231,13 +193,23 @@ public class TaskReasoner_Local extends ArbiAgent {
 
 			messageQueue.put(message);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
 	public static void main(String[] args) {
-		ArbiAgent agent = new TaskReasoner_Local();
+
+		String brokerAddress = "";
+		String robotID;
+		if(args.length == 0) {
+			brokerAddress = "tcp://172.16.165.141:61316";
+			robotID = "Local";	
+		} else {
+			robotID = args[0];
+			brokerAddress = args[1];
+		}
+		
+		TaskReasoner_Local agent = new TaskReasoner_Local(robotID, brokerAddress);
 	}
 
 	public boolean dequeueMessage() {
@@ -258,7 +230,6 @@ public class TaskReasoner_Local extends ArbiAgent {
 				
 
 			} catch (InterruptedException | ParseException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
@@ -267,12 +238,6 @@ public class TaskReasoner_Local extends ArbiAgent {
 	}
 
 	public boolean sendToTM(String type, String gl) {
-		try {
-			Thread.sleep(50);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		System.out.println("send to tm : " + type + ", " + gl);
 		this.send(agentURIPrefix + TASKMANAGER_ADDRESS, "(" + type + " " + gl + ")");
 
@@ -283,9 +248,17 @@ public class TaskReasoner_Local extends ArbiAgent {
 		try {
 			Thread.sleep(count);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public String getWorklflowID(String serviceName) {
+		workflowID += workflowID;
+		if (serviceName.startsWith("\"")) {
+			serviceName = serviceName.substring(1,serviceName.length()-1);
+		}
+		String id = serviceName + workflowID;
+		return id;
 	}
 	
 	public void parsePlan(String string) {

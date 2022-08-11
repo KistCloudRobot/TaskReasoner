@@ -9,9 +9,9 @@ PLAN PERFORM PrepareUnstoringStation146() {
 	BODY :
 		System.out.println("\n\n service start PREPARE_UNSTORING at station146 \n\n");
 		
-		POST PERFORM RequestFlowPrepareUnstoring();
+		POST PERFORM RequestFlowPrepareUnstoringStation146();
 		
-		POST PERFORM ReportFlowPrepareUnstoring();
+		POST PERFORM ReportFlowPrepareUnstoringStation146();
 		
 		System.out.println("PrepareUnstoring finished!");
 	UTILITY : 20;

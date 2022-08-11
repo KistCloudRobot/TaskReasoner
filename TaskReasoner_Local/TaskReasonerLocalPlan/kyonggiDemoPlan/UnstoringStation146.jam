@@ -9,9 +9,9 @@ PLAN PERFORM UnstoringStation146() {
 	BODY :
 		System.out.println("\n\n service start UNSTORING at station146 \n\n");
 		
-		POST PERFORM RequestFlowUnstoring();
+		POST PERFORM RequestFlowUnstoringStation146();
 		
-		POST PERFORM ReportFlowUnstoring();
+		POST PERFORM ReportFlowUnstoringStation146();
 		
 		System.out.println("Unstoring finished!");
 		//PERFORM FinalizeService($serviceName, $cmd);
