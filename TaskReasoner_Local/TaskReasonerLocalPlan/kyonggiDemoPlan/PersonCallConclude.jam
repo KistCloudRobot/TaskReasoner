@@ -59,57 +59,57 @@ PLAN Conclude PersonCall($callID,$location,$cmd){
 }
 
 PLAN Conclude PersonCall($callID,$location,$cmd){
-	ID : "personCallConcludePrepareUnstoringStation146"
+	ID : "personCallConcludePrepareUnstoringstation3"
 	precondition:
 		FACT TaskReasoner($reasoner);
 		$cmd == "PrepareUnstoring";
-		$location == "http://www.arbi.com/ontologies/arbi.owl#station146";
+		$location == "http://www.arbi.com/ontologies/arbi.owl#station3";
 	body:
 	
-		System.out.println("PrepareUnstoring station146 personcall start");
-		POST PERFORM PrepareUnstoringStation146();
+		System.out.println("PrepareUnstoring station3 personcall start");
+		POST PERFORM PrepareUnstoringStation3();
 		RETRACT PersonCall($callID,$location,$cmd);
 	utility : 2000;
 }
 
 PLAN Conclude PersonCall($callID,$location,$cmd){
-	ID : "personCallConcludeUnstoringStation146"
+	ID : "personCallConcludeUnstoringstation3"
 	precondition:
 		FACT TaskReasoner($reasoner);
 		$cmd == "Unstoring";
-		$location == "http://www.arbi.com/ontologies/arbi.owl#station146";
+		$location == "http://www.arbi.com/ontologies/arbi.owl#station3";
 	body:
 	
-		System.out.println("Unstoring station146 personcall start");
-		POST PERFORM UnstoringStation146();
+		System.out.println("Unstoring station3 personcall start");
+		POST PERFORM UnstoringStation3();
 		RETRACT PersonCall($callID,$location,$cmd);
 	utility : 2000;
 }
 
 PLAN Conclude PersonCall($callID,$location,$cmd){
-	ID : "personCallConcludePrepareUnstoringStation143"
+	ID : "personCallConcludePrepareUnstoringstation4"
 	precondition:
 		FACT TaskReasoner($reasoner);
 		$cmd == "PrepareUnstoring";
-		$location == "http://www.arbi.com/ontologies/arbi.owl#station143";
+		$location == "http://www.arbi.com/ontologies/arbi.owl#station4";
 	body:
 	
-		System.out.println("PrepareUnstoring station143 personcall start");
-		POST PERFORM PrepareUnstoringStation143();
+		System.out.println("PrepareUnstoring station4 personcall start");
+		POST PERFORM PrepareUnstoringStation4();
 		RETRACT PersonCall($callID,$location,$cmd);
 	utility : 2000;
 }
 
 PLAN Conclude PersonCall($callID,$location,$cmd){
-	ID : "personCallConcludeUnstoringStation143"
+	ID : "personCallConcludeUnstoringstation4"
 	precondition:
 		FACT TaskReasoner($reasoner);
 		$cmd == "Unstoring";
-		$location == "http://www.arbi.com/ontologies/arbi.owl#station143";
+		$location == "http://www.arbi.com/ontologies/arbi.owl#station4";
 	body:
 	
 		System.out.println("Unstoring station22 personcall start");
-		POST PERFORM UnstoringStation143();
+		POST PERFORM UnstoringStation4();
 		RETRACT PersonCall($callID,$location,$cmd);
 	utility : 2000;
 }

@@ -1,0 +1,49 @@
+PREFIXES:
+	PREFIX arbi: <http://www.arbi.com//ontologies#>;
+	PREFIX isro: <http://www.arbi.com//BuiltInPlan#>;		
+	
+PLAN PERFORM UnstoringStation4() {
+	ID : "LogisticManagerWorkflowUnstoringstation4"
+	PRECONDITION :
+		FACT TaskReasoner($reasoner);
+	BODY :
+		System.out.println("\n\n service start UNSTORING at station4 \n\n");
+		
+		POST PERFORM RequestFlowUnstoringstation4();
+		
+		POST PERFORM ReportFlowUnstoringstation4();
+		
+		System.out.println("Unstoring finished!");
+		//PERFORM FinalizeService($serviceName, $cmd);
+		
+	UTILITY : 20;
+}
+
+PLAN ACHIEVE RequestFlowUnstoringstation4() {
+	ID : "UnstoringRequestFlowstation4"
+	PRECONDITION :
+		FACT TaskReasoner($reasoner);
+	BODY :
+		System.out.println("\n requestflow START UNSTORING station4 \n");
+				
+		PERFORM ThrowGoal("PalletTransportedRequestedTo");
+
+		System.out.println("\n requestflow END UNSTORING station4 \n");
+	UTILITY : 100;
+}
+
+PLAN PERFORM ReportFlowUnstoringstation4() {
+	ID : "UnstoringReportFlowstation4"
+	PRECONDITION :
+		FACT RequestFlowUnstoring();
+		FACT TaskReasoner($reasoner);
+	BODY :
+		System.out.println("\n reportflow START UNSTORING station4 \n");
+
+		PERFORM WaitGoalComplete("PalletTransportedReportedFrom");
+		
+		RETRACT RequestFlowUnstoring();
+		System.out.println("\n reportflow END UNSTORING station4 \n");
+		
+	UTILITY : 30;
+}
