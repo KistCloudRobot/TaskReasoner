@@ -1,5 +1,6 @@
 package test;
 
+import kr.ac.uos.ai.arbi.BrokerType;
 import kr.ac.uos.ai.arbi.agent.ArbiAgent;
 import kr.ac.uos.ai.arbi.agent.ArbiAgentExecutor;
 import kr.ac.uos.ai.arbi.ltm.DataSource;
@@ -19,7 +20,7 @@ public class ServiceModelTest extends ArbiAgent{
 	}
 	public void onStart() {
 		DataSource ds = new DataSource();
-		ds.connect(brokerURI, dsURIPrefix+TM_URI, 2);
+		ds.connect(brokerURI, dsURIPrefix+TM_URI, BrokerType.ACTIVEMQ);
 		}
 	
 	@Override
@@ -42,7 +43,7 @@ public class ServiceModelTest extends ArbiAgent{
 	public static void main(String[] args) {
 		ArbiAgent tm = new ServiceModelTest();
 		
-		ArbiAgentExecutor.execute(brokerURI, agentURIPrefix + TM_URI, tm, 2);
+		ArbiAgentExecutor.execute(brokerURI, agentURIPrefix + TM_URI, tm, BrokerType.ACTIVEMQ);
 		String test = "(serviceModel \"SchedulePrepareation\" \"educationService\" "
 				+ "(workflow \"RoomPrepared\" \"MeetingAnnounced\") "
 				+ "(precondition "

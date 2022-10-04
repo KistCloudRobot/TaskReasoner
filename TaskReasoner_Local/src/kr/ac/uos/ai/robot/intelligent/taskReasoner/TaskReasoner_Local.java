@@ -3,7 +3,7 @@ package kr.ac.uos.ai.robot.intelligent.taskReasoner;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-
+import kr.ac.uos.ai.arbi.BrokerType;
 import kr.ac.uos.ai.arbi.agent.ArbiAgent;
 import kr.ac.uos.ai.arbi.agent.ArbiAgentExecutor;
 import kr.ac.uos.ai.arbi.agent.logger.LoggerManager;
@@ -31,7 +31,7 @@ public class TaskReasoner_Local extends ArbiAgent {
 
 	private static String brokerURI = "tcp://172.16.165.141:61316";
 	private static String TASKREASONER_ADDRESS = "www.arbi.com/TaskReasoner";
-	private static int brokerType = 2;
+	private static BrokerType brokerType = BrokerType.ZEROMQ;
 	private static String TASKMANAGER_ADDRESS  = "www.arbi.com/TaskManager";
 
 	private static final String agentURIPrefix = "agent://";
@@ -151,7 +151,7 @@ public class TaskReasoner_Local extends ArbiAgent {
 	@Override
 	public void onStart() {
 		System.out.println("====onStart====");
-		ds.connect(ENV_JMS_BROKER, dsURIPrefix + TASKREASONER_ADDRESS, 2);
+		ds.connect(ENV_JMS_BROKER, dsURIPrefix + TASKREASONER_ADDRESS, brokerType);
 		// goal and context is wrapped
 		// String subscriveGoal = "(rule (fact (goal $goal $precondition
 		// $postcondition)) --> (notify (goal $goal $precondition $postcondition)))";

@@ -1,5 +1,6 @@
 package test;
 
+import kr.ac.uos.ai.arbi.BrokerType;
 import kr.ac.uos.ai.arbi.agent.ArbiAgent;
 import kr.ac.uos.ai.arbi.agent.ArbiAgentExecutor;
 import kr.ac.uos.ai.arbi.ltm.DataSource;
@@ -19,7 +20,7 @@ public class CMTest extends ArbiAgent {
 	
 	@Override
 	public void onStart() {
-		dataSource.connect(brokerURI, dsURIPrefix+CM_URI, 2);
+		dataSource.connect(brokerURI, dsURIPrefix+CM_URI, BrokerType.ACTIVEMQ);
 	}
 	
 	@Override
@@ -30,7 +31,7 @@ public class CMTest extends ArbiAgent {
 
 	public static void main(String[] args) throws InterruptedException {
 		ArbiAgent cm = new CMTest();	
-		ArbiAgentExecutor.execute(brokerURI, agentURIPrefix+CM_URI, cm, 2);
+		ArbiAgentExecutor.execute(brokerURI, agentURIPrefix+CM_URI, cm, BrokerType.ACTIVEMQ);
 		
 
 		System.out.println("CMTest start");
