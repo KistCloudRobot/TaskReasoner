@@ -202,7 +202,8 @@ public class TaskReasoner_Local extends ArbiAgent {
 		String brokerAddress = "";
 		String robotID;
 		if(args.length == 0) {
-			brokerAddress = "tcp://172.16.165.141:61316";
+//			brokerAddress = "tcp://172.16.165.141:61316";
+			brokerAddress = "tcp://192.168.100.10:61316";
 			robotID = "Local";	
 		} else {
 			robotID = args[0];
