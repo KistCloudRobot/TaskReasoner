@@ -31,7 +31,6 @@ public class TaskReasoner_Local extends ArbiAgent {
 
 	private static String brokerURI = "tcp://172.16.165.141:61316";
 	private static String TASKREASONER_ADDRESS = "www.arbi.com/TaskReasoner";
-	private static BrokerType brokerType = BrokerType.ZEROMQ;
 	private static String TASKMANAGER_ADDRESS  = "www.arbi.com/TaskManager";
 
 	private static final String agentURIPrefix = "agent://";
@@ -50,35 +49,35 @@ public class TaskReasoner_Local extends ArbiAgent {
 	private UtilityCalculator utilityCalculator;
 
 	private int workflowID;
+//
+//	public TaskReasoner_Local() {
+//
+//		initAddress();
+//		// config();
+//		interpreter = JAM.parse(new String[] { "TaskReasonerLocalPlan/boot.jam" });
+//
+//		ds = new TaskReasonerDataSource(this);
+//
+//		messageQueue = new LinkedBlockingQueue<RecievedMessage>();
+//		glMessageManager = new GLMessageManager(interpreter, ds);
+//		planLoader = new PlanLoader(interpreter);
+//		serviceModelGenerator = new ServiceModelGenerator(this);
+//		policyHandler = new PolicyHandler(this, interpreter);
+//		jsonMessageManager = new JsonMessageManager(policyHandler);
+//		// server = new Server(this);
+//		utilityCalculator = new UtilityCalculator(interpreter);
+//
+//		ArbiAgentExecutor.execute(ENV_JMS_BROKER, agentURIPrefix + TASKREASONER_ADDRESS, this, brokerType);
+//
+//		loggerManager = LoggerManager.getInstance();
+//
+//		taskReasonerAction = new TaskReasonerAction(this, interpreter, loggerManager);
+//		
+//		workflowID = 0;
+//		init();
+//	}
 
-	public TaskReasoner_Local() {
-
-		initAddress();
-		// config();
-		interpreter = JAM.parse(new String[] { "TaskReasonerLocalPlan/boot.jam" });
-
-		ds = new TaskReasonerDataSource(this);
-
-		messageQueue = new LinkedBlockingQueue<RecievedMessage>();
-		glMessageManager = new GLMessageManager(interpreter, ds);
-		planLoader = new PlanLoader(interpreter);
-		serviceModelGenerator = new ServiceModelGenerator(this);
-		policyHandler = new PolicyHandler(this, interpreter);
-		jsonMessageManager = new JsonMessageManager(policyHandler);
-		// server = new Server(this);
-		utilityCalculator = new UtilityCalculator(interpreter);
-
-		ArbiAgentExecutor.execute(ENV_JMS_BROKER, agentURIPrefix + TASKREASONER_ADDRESS, this, brokerType);
-
-		loggerManager = LoggerManager.getInstance();
-
-		taskReasonerAction = new TaskReasonerAction(this, interpreter, loggerManager);
-		
-		workflowID = 0;
-		init();
-	}
-
-	public TaskReasoner_Local(String robotID, String brokerAddress) {
+	public TaskReasoner_Local(String robotID, String brokerAddress, int port, BrokerType brokerType) {
 		ENV_JMS_BROKER = brokerAddress;
 		interpreter = JAM.parse(new String[] { "TaskReasonerLocalPlan/boot.jam" });
 
@@ -92,8 +91,9 @@ public class TaskReasoner_Local extends ArbiAgent {
 		jsonMessageManager = new JsonMessageManager(policyHandler);
 		utilityCalculator = new UtilityCalculator(interpreter);
 
-		ArbiAgentExecutor.execute(ENV_JMS_BROKER, agentURIPrefix + TASKREASONER_ADDRESS, this, brokerType);
+		ArbiAgentExecutor.execute(ENV_JMS_BROKER,port , agentURIPrefix + TASKREASONER_ADDRESS, this, brokerType);
 
+		ds.connect(ENV_JMS_BROKER, port, dsURIPrefix + TASKREASONER_ADDRESS, brokerType);
 		loggerManager = LoggerManager.getInstance();
 
 		taskReasonerAction = new TaskReasonerAction(this, interpreter, loggerManager);
@@ -151,7 +151,6 @@ public class TaskReasoner_Local extends ArbiAgent {
 	@Override
 	public void onStart() {
 		System.out.println("====onStart====");
-		ds.connect(ENV_JMS_BROKER, dsURIPrefix + TASKREASONER_ADDRESS, brokerType);
 		// goal and context is wrapped
 		// String subscriveGoal = "(rule (fact (goal $goal $precondition
 		// $postcondition)) --> (notify (goal $goal $precondition $postcondition)))";
@@ -197,21 +196,6 @@ public class TaskReasoner_Local extends ArbiAgent {
 		}
 	}
 
-	public static void main(String[] args) {
-
-		String brokerAddress = "";
-		String robotID;
-		if(args.length == 0) {
-//			brokerAddress = "tcp://172.16.165.141:61316";
-			brokerAddress = "tcp://192.168.100.10:61316";
-			robotID = "Local";	
-		} else {
-			robotID = args[0];
-			brokerAddress = args[1];
-		}
-		
-		TaskReasoner_Local agent = new TaskReasoner_Local(robotID, brokerAddress);
-	}
 
 	public boolean dequeueMessage() {
 
@@ -297,4 +281,25 @@ public class TaskReasoner_Local extends ArbiAgent {
 	public void putUtilityFunction(String serviceName, String stringFunction) {
 		utilityCalculator.putUtilityFunction(serviceName, stringFunction);
 	}
+	
+	public static void main(String[] args) {
+
+		String brokerAddress = "";
+		String robotID;
+		int port;
+		if(args.length == 0) {
+			brokerAddress = "172.16.165.141";
+//			brokerAddress = "192.168.100.10";
+			robotID = "Local";	
+			port = 61316;
+		} else {
+			robotID = args[0];
+			brokerAddress = args[1];
+			port = Integer.parseInt(args[2]);
+		}
+		
+		TaskReasoner_Local agent = new TaskReasoner_Local(robotID, brokerAddress,port, BrokerType.ACTIVEMQ);
+	}
+
+	
 }

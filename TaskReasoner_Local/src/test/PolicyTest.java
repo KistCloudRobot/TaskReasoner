@@ -23,7 +23,7 @@ public class PolicyTest extends ArbiAgent{
 	}
 	public void onStart() {
 		DataSource ds = new DataSource();
-		ds.connect(brokerURI, dsURIPrefix+TM_URI, BrokerType.ACTIVEMQ);
+//		ds.connect(brokerURI, dsURIPrefix+TM_URI, BrokerType.ACTIVEMQ);
 		}
 	
 	@Override
@@ -43,7 +43,7 @@ public class PolicyTest extends ArbiAgent{
 	public static void main(String[] args) throws InterruptedException {
 		ArbiAgent tm = new PolicyTest();
 		
-		ArbiAgentExecutor.execute(brokerURI, agentURIPrefix + TM_URI, tm, BrokerType.ACTIVEMQ);
+//		ArbiAgentExecutor.execute(brokerURI, agentURIPrefix + TM_URI, tm, BrokerType.ACTIVEMQ);
 		String test;
 		
 		String arg1 = GLFactory.escape("$value = $policyHandler.getLMPolicyValue($policyName);");

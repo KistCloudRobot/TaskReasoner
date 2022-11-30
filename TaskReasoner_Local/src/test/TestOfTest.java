@@ -21,7 +21,7 @@ public class TestOfTest extends ArbiAgent{
 	}
 	public void onStart() {
 		DataSource ds = new DataSource();
-		ds.connect(brokerURI, dsURIPrefix+TM_URI, BrokerType.ACTIVEMQ);
+//		ds.connect(brokerURI, dsURIPrefix+TM_URI, BrokerType.ACTIVEMQ);
 		}
 	
 	@Override
@@ -44,7 +44,7 @@ public class TestOfTest extends ArbiAgent{
 	public static void main(String[] args) {
 		ArbiAgent tm = new TestOfTest();
 		
-		ArbiAgentExecutor.execute(brokerURI, agentURIPrefix + TM_URI, tm, BrokerType.ACTIVEMQ);
+//		ArbiAgentExecutor.execute(brokerURI, agentURIPrefix + TM_URI, tm, BrokerType.ACTIVEMQ);
 		
 		
 		String test = "(serviceModel \"SchedulePrepareation\" \"educationService\" "
