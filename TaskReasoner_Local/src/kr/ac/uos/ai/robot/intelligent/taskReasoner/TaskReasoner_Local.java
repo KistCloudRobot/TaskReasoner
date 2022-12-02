@@ -83,6 +83,7 @@ public class TaskReasoner_Local extends ArbiAgent {
 
 		ds = new TaskReasonerDataSource(this);
 
+		ds.connect(ENV_JMS_BROKER, port, dsURIPrefix + TASKREASONER_ADDRESS, brokerType);
 		messageQueue = new LinkedBlockingQueue<RecievedMessage>();
 		glMessageManager = new GLMessageManager(interpreter, ds);
 		planLoader = new PlanLoader(interpreter);
@@ -93,7 +94,6 @@ public class TaskReasoner_Local extends ArbiAgent {
 
 		ArbiAgentExecutor.execute(ENV_JMS_BROKER,port , agentURIPrefix + TASKREASONER_ADDRESS, this, brokerType);
 
-		ds.connect(ENV_JMS_BROKER, port, dsURIPrefix + TASKREASONER_ADDRESS, brokerType);
 		loggerManager = LoggerManager.getInstance();
 
 		taskReasonerAction = new TaskReasonerAction(this, interpreter, loggerManager);
