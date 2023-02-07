@@ -538,3 +538,5 @@
 [ExceptionLog 2022-12-02 17:35:20]ghost msg : Subscribe:1669970120532 action: Resultclient : ds://www.arbi.com/TaskReasoner
 [ExceptionLog 2022-12-02 17:44:44]ghost msg : Subscribe:1669970684476 action: Resultclient : ds://www.arbi.com/TaskReasoner
 [ExceptionLog 2022-12-02 17:47:38]ghost msg : Subscribe:1669970858834 action: Resultclient : ds://www.arbi.com/TaskReasoner
+[ExceptionLog 2022-12-02 18:32:16]ghost msg : Subscribe:1669973536815 action: Resultclient : ds://www.arbi.com/TaskReasoner
+[ExceptionLog 2022-12-02 18:32:16]ghost msg : Subscribe:1669973536815 action: Resultclient : ds://www.arbi.com/TaskReasoner

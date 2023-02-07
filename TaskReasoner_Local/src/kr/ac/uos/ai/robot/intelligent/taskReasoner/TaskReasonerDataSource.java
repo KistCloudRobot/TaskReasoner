@@ -4,9 +4,9 @@ import kr.ac.uos.ai.arbi.ltm.DataSource;
 
 public class TaskReasonerDataSource extends DataSource{
 
-	private TaskReasoner_Local taskReasoner;
+	private TaskReasoner taskReasoner;
 	
-	public TaskReasonerDataSource(TaskReasoner_Local taskReasoner) {
+	public TaskReasonerDataSource(TaskReasoner taskReasoner) {
 		// TODO Auto-generated constructor stub
 		this.taskReasoner = taskReasoner;
 	}

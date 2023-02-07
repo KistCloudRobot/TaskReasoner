@@ -22,7 +22,7 @@ import kr.ac.uos.ai.robot.intelligent.taskReasoner.utility.UtilityCalculator;
 import uos.ai.jam.Interpreter;
 import uos.ai.jam.JAM;
 
-public class TaskReasoner_Local extends ArbiAgent {
+public class TaskReasoner extends ArbiAgent {
 
 	public static String ENV_JMS_BROKER;
 	public static String ENV_AGENT_NAME;
@@ -77,7 +77,7 @@ public class TaskReasoner_Local extends ArbiAgent {
 //		init();
 //	}
 
-	public TaskReasoner_Local(String robotID, String brokerAddress, int port, BrokerType brokerType) {
+	public TaskReasoner(String robotID, String brokerAddress, int port, BrokerType brokerType) {
 		ENV_JMS_BROKER = brokerAddress;
 		interpreter = JAM.parse(new String[] { "TaskReasonerLocalPlan/boot.jam" });
 
@@ -298,7 +298,7 @@ public class TaskReasoner_Local extends ArbiAgent {
 			port = Integer.parseInt(args[2]);
 		}
 		
-		TaskReasoner_Local agent = new TaskReasoner_Local(robotID, brokerAddress,port, BrokerType.ACTIVEMQ);
+		TaskReasoner agent = new TaskReasoner(robotID, brokerAddress,port, BrokerType.ACTIVEMQ);
 	}
 
 	
