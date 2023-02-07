@@ -1,0 +1,32 @@
+PREFIXES:
+	PREFIX arbi: <http://www.arbi.com//ontologies#>;
+
+Plan PERFORM loadPlanPackage(){
+	ID: "loadPlanPackageForLogisticManager"
+	PRECONDITION:
+		FACT ExtraUtility($helper);
+		FACT AssignedRole("logisticManager");
+	BODY:
+		$helper.loadPlanPackage("./plan/common");
+		$helper.loadPlanPackage("./plan/logisticManager");
+}
+
+Plan PERFORM loadPlanPackage(){
+	ID: "loadPlanPackageForCarrier"
+	PRECONDITION:
+		FACT ExtraUtility($helper);
+		FACT AssignedRole("carrier");
+	BODY:
+		$helper.loadPlanPackage("./plan/common");
+		$helper.loadPlanPackage("./plan/carrier");
+}
+
+Plan PERFORM loadPlanPackage(){
+	ID: "loadPlanPackageForPalletizer"
+	PRECONDITION:
+		FACT ExtraUtility($helper);
+		FACT AssignedRole("palletizer");
+	BODY:
+		$helper.loadPlanPackage("./plan/common");
+		$helper.loadPlanPackage("./plan/palletizer");
+}

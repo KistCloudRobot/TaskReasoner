@@ -1,0 +1,91 @@
+PREFIXES:
+	PREFIX arbi: <http://www.arbi.com//ontologies#>;
+	PREFIX isro: <http://www.arbi.com//BuiltInPlan#>;		
+	
+PLAN PERFORM ThrowWorkflow() {
+	ID : "StoringCarrierWorkflow1"
+	PRECONDITION :
+	BODY :
+	
+		System.out.println("GoalAssignedFrom start");
+		PERFORM WaitGoalComplete("GoalAssignedFrom");
+		System.out.println("GoalAssignedFrom complete");
+		
+		PERFORM ThrowGoal("MoveToLocation");
+		PERFORM ThrowGoal("ObjectGrabbed");
+		PERFORM ThrowGoal("MoveToLocation");
+		PERFORM ThrowGoal("ObjectPlaced");
+		
+		System.out.println("GoalReportedTo start");
+		PERFORM ThrowGoal("GoalReportedTo");
+		
+		System.out.println("GoalReportedTo end");
+		
+		//PERFORM ThrowGoal("ReturnToWait");
+		PERFORM FinalizeService();
+		ASSERT PostWorkflowGoals();
+		
+	UTILITY : 1000;
+}
+PLAN PERFORM ThrowGoal($goalName) {
+	ID : "ThrowGoalReturnToWait"
+	PRECONDITION :
+		FACT TaskReasoner($reasoner);
+		$goalName == "ReturnToWait";
+	BODY :
+		System.out.println("start ThrowGoal ReturnToWait");
+		$reasoner.sendToTM("PostGoal", "(ReturnToWait)");
+		PERFORM WaitGoalComplete($goalName);
+	UTILITY : 10;
+}
+PLAN PERFORM ThrowGoal($goalName) {
+	ID : "ThrowGoalMoveToLocation1111"
+	PRECONDITION :
+		$goalName == "MoveToLocation";
+		FACT TaskReasoner($reasoner);
+	BODY :
+		System.out.println("start ThrowGoal MoveToLocation");
+		$reasoner.sendToTM("PostGoal", "(MoveToLocation $station)");
+		PERFORM WaitGoalComplete("MoveToLocation");
+	UTILITY : 10;
+}
+PLAN PERFORM ThrowGoal($goalName) {
+	ID : "ThrowGoalObjectGrabbed"
+	PRECONDITION :
+		$goalName == "ObjectGrabbed";
+		FACT TaskReasoner($reasoner);
+	BODY :
+		$reasoner.sendToTM("PostGoal", "(ObjectGrabbed $object $location)");
+		PERFORM WaitGoalComplete($goalName);
+	UTILITY : 10;
+}
+
+PLAN PERFORM ThrowGoal($goalName) {
+	ID : "ThrowGoalObjectPlaced"
+	PRECONDITION :
+		$goalName == "ObjectPlaced";
+		FACT TaskReasoner($reasoner);
+	BODY :
+		$reasoner.sendToTM("PostGoal", "(ObjectPlaced $object $location)");
+		PERFORM WaitGoalComplete($goalName);
+	UTILITY : 10;
+}
+
+PLAN PERFORM ThrowGoal($goalName) {
+	ID : "ThrowGoalPalletTransportedReportedTo"
+	PRECONDITION :
+		$goalName == "GoalReportedTo";
+		FACT TaskReasoner($reasoner);
+	BODY :
+		$reasoner.sendToTM("PostGoal", "(GoalReportedTo $arg1 $arg2 $arg3)");
+		PERFORM WaitGoalComplete($goalName);
+	UTILITY : 10;
+}
+
+PLAN PERFORM FinalizeService(){
+	ID : "FinalizeStoringCarrierWorkflow1"
+	PRECONDITION :
+	BODY :
+		System.out.println("start finalized service");
+	UTILITY : 100000;
+}

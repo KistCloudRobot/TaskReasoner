@@ -27,7 +27,7 @@ public class GLMessageManager {
 		ds.assertFact(gl);
 	}
 	
-	public void assertContext(GeneralizedList glContext) {
+	public void assertGL(GeneralizedList glContext) {
 		String glName;
 		
 		glName = glContext.getName();

@@ -2,13 +2,12 @@
 PREFIXES:
 	PREFIX arbi: <http://www.arbi.com//ontologies#>;
 	PREFIX isro: <http://www.arbi.com//BuiltInPlan#>;		
+	
 PLAN PERFORM WaitGoalComplete($goal) {
 	ID : "WaitGoalComplete"
 	PRECONDITION :
-		FACT GoalCompleted($goal);
+		FACT GoalCompleted($goal, $goalGL);
 	BODY :
-		System.out.println("GoalCompleted! : " + $goal);
-		RETRACT GoalCompleted($goal);
-		
-	UTILITY : 50;
+		RETRACT GoalCompleted($goal, $goalGL);
+	UTILITY :10;
 }

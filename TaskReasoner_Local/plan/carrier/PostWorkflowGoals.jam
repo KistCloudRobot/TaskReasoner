@@ -1,0 +1,13 @@
+
+PLAN CONCLUDE PostWorkflowGoals() {
+	ID : "PostWorkflowGoals"
+	BODY :
+		System.out.println("==post start==");
+				
+		POST PERFORM ThrowWorkflow();
+		
+		
+		RETRACT PostWorkflowGoals();
+		System.out.println("==post complete==");
+	UTILITY : 100000;
+}

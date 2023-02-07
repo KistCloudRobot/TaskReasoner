@@ -211,9 +211,18 @@ public class TaskReasoner extends ArbiAgent {
 				gl = GLFactory.newGLFromGLString(data);
 
 				//System.out.println("message from " + sender  + " dequeued : " + gl.toString());
-				glMessageManager.assertContext(gl.getExpression(0).asGeneralizedList());
-				
 
+				if (gl.getName().equals("context")) {
+
+					glMessageManager.assertGL(gl.getExpression(0).asGeneralizedList());
+				} else if (gl.getName().equals("GoalCompleted")) {
+					System.out.println("completed goal name : " + gl.getExpression(0).asValue().stringValue());
+					glMessageManager.assertGL(gl);
+				} else if(gl.getExpression(0).isGeneralizedList()) {
+					System.out.println(gl.toString());
+				} else {
+					glMessageManager.assertFact("RecievedMessage", sender, data);
+				}
 			} catch (InterruptedException | ParseException e) {
 				e.printStackTrace();
 			}
