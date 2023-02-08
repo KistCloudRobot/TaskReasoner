@@ -77,7 +77,7 @@ public class TaskReasoner extends ArbiAgent {
 //		init();
 //	}
 
-	public TaskReasoner(String robotID, String brokerAddress, int port, BrokerType brokerType) {
+	public TaskReasoner(String role, String brokerAddress, int port, BrokerType brokerType) {
 		ENV_JMS_BROKER = brokerAddress;
 		interpreter = JAM.parse(new String[] { "./plan/boot.jam" });
 
@@ -99,6 +99,7 @@ public class TaskReasoner extends ArbiAgent {
 		taskReasonerAction = new TaskReasonerAction(this, interpreter, loggerManager);
 		
 		workflowID = 0;
+		glMessageManager.assertFact("AssignedRole",role);
 		init();
 		
 	}
