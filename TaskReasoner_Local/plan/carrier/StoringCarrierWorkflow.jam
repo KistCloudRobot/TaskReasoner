@@ -7,19 +7,19 @@ PLAN PERFORM ThrowWorkflow() {
 	PRECONDITION :
 	BODY :
 	
-		System.out.println("GoalAssignedFrom start");
-		PERFORM WaitGoalComplete("GoalAssignedFrom");
-		System.out.println("GoalAssignedFrom complete");
+		System.out.println("PalletTransportedRequestedFrom start");
+		PERFORM WaitGoalComplete("PalletTransportedRequestedFrom");
+		System.out.println("PalletTransportedRequestedFrom complete");
 		
 		PERFORM ThrowGoal("MoveToLocation");
 		PERFORM ThrowGoal("ObjectGrabbed");
 		PERFORM ThrowGoal("MoveToLocation");
 		PERFORM ThrowGoal("ObjectPlaced");
 		
-		System.out.println("GoalReportedTo start");
-		PERFORM ThrowGoal("GoalReportedTo");
+		System.out.println("PalletTransportedReportedTo start");
+		PERFORM ThrowGoal("PalletTransportedReportedTo");
 		
-		System.out.println("GoalReportedTo end");
+		System.out.println("PalletTransportedReportedTo end");
 		
 		//PERFORM ThrowGoal("ReturnToWait");
 		PERFORM FinalizeService();
@@ -74,10 +74,10 @@ PLAN PERFORM ThrowGoal($goalName) {
 PLAN PERFORM ThrowGoal($goalName) {
 	ID : "ThrowGoalPalletTransportedReportedTo"
 	PRECONDITION :
-		$goalName == "GoalReportedTo";
+		$goalName == "PalletTransportedReportedTo";
 		FACT TaskReasoner($reasoner);
 	BODY :
-		$reasoner.sendToTM("PostGoal", "(GoalReportedTo $arg1 $arg2 $arg3)");
+		$reasoner.sendToTM("PostGoal", "(PalletTransportedReportedTo $arg1 $arg2 $arg3)");
 		PERFORM WaitGoalComplete($goalName);
 	UTILITY : 10;
 }

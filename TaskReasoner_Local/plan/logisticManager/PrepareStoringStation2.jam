@@ -24,7 +24,7 @@ PLAN ACHIEVE RequestFlowPrepareStoringStation2() {
 		FACT TaskReasoner($reasoner);
 	BODY :
 		System.out.println("\n requestflow START PREPARE_STORING station2 \n");
-		PERFORM ThrowGoal("GoalAssignedTo");
+		PERFORM ThrowGoal("PalletTransportedRequestedTo");
 		
 		System.out.println("\n requestflow END PREPARE_STORING station2 \n");
 	UTILITY : 100;
@@ -38,7 +38,7 @@ PLAN PERFORM ReportFlowPrepareStoringStation2() {
 	BODY :
 		System.out.println("\n reportflow START PREPARE_STORING station2 \n");
 		
-		PERFORM WaitGoalComplete("GoalReportedFrom");
+		PERFORM WaitGoalComplete("PalletTransportedReportedFrom");
 	
 		System.out.println("GoalReportedFrom finalized");
 	

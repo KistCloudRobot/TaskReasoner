@@ -79,7 +79,7 @@ public class TaskReasoner extends ArbiAgent {
 
 	public TaskReasoner(String robotID, String brokerAddress, int port, BrokerType brokerType) {
 		ENV_JMS_BROKER = brokerAddress;
-		interpreter = JAM.parse(new String[] { "TaskReasonerLocalPlan/boot.jam" });
+		interpreter = JAM.parse(new String[] { "./plan/boot.jam" });
 
 		ds = new TaskReasonerDataSource(this);
 

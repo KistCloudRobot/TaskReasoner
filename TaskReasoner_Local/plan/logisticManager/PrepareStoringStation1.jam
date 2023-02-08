@@ -25,7 +25,7 @@ PLAN ACHIEVE RequestFlowPrepareStoringStation1() {
 	BODY :
 		System.out.println("\n requestflow START PREPARE_STORING station1 \n");
 		
-		PERFORM ThrowGoal("GoalAssignedTo");
+		PERFORM ThrowGoal("PalletTransportedRequestedTo");
 		
 		System.out.println("\n requestflow END PREPARE_STORING station1 \n");
 	UTILITY : 100;
@@ -39,8 +39,8 @@ PLAN PERFORM ReportFlowPrepareStoringStation1() {
 	BODY :
 		System.out.println("\n reportflow START PREPARE_STORING station1 \n");
 		
-		PERFORM WaitGoalComplete("GoalReportedFrom");
-		System.out.println("GoalReportedFrom finalized");
+		PERFORM WaitGoalComplete("PalletTransportedReportedFrom");
+		System.out.println("PalletTransportedReportedFrom finalized");
 	
 		RETRACT RequestFlowPrepareStoringStation1();
 		System.out.println("\n reportflow END PREPARE_STORING station1 \n");
