@@ -5,13 +5,13 @@ import java.util.ArrayList;
 import kr.ac.uos.ai.arbi.model.GLFactory;
 import kr.ac.uos.ai.arbi.model.GeneralizedList;
 import kr.ac.uos.ai.arbi.model.parser.ParseException;
-import kr.ac.uos.ai.robot.intelligent.taskReasoner.TaskReasoner_Local;
+import kr.ac.uos.ai.robot.intelligent.taskReasoner.TaskReasoner;
 import kr.ac.uos.ai.robot.intelligent.taskReasoner.action.argument.GoalAppendArgument;
 import kr.ac.uos.ai.robot.intelligent.taskReasoner.action.argument.ServiceAppendArgument;
 
 public class ServiceModelGenerator {
 
-	private TaskReasoner_Local								taskReasoner;
+	private TaskReasoner								taskReasoner;
 	
 	private String										servicePackageID;
 	private String										servicePackageName;
@@ -24,7 +24,7 @@ public class ServiceModelGenerator {
 	private GeneralizedList								safety;
 	*/
 	
-	public ServiceModelGenerator(TaskReasoner_Local taskReasoner) {
+	public ServiceModelGenerator(TaskReasoner taskReasoner) {
 		this.taskReasoner = taskReasoner;
 	}
 	
@@ -62,11 +62,14 @@ public class ServiceModelGenerator {
 	public void generateServiceModel(ServiceAppendArgument argument) {
 		setServiceModel(argument);
 		
+		String postWorkflowPlan = makePostWorkflowPlan();
+		taskReasoner.parsePlan(postWorkflowPlan);
+		
 		String workflowPlan = makeWorkflowPlan();
 		taskReasoner.parsePlan(workflowPlan);
 
-		String finalizePlan = makeServiceFinalizePlan();
-		taskReasoner.parsePlan(finalizePlan);
+		//String finalizePlan = makeServiceFinalizePlan();
+		//taskReasoner.parsePlan(finalizePlan);
 
 		
 //		System.out.println(workflowPlan);
@@ -75,7 +78,7 @@ public class ServiceModelGenerator {
 		taskReasoner.putUtilityFunction(removeQuotationMarks(servicePackageName), utility);
 		
 		
-		assertWorkflowContext();
+		//assertWorkflowContext();
 
 		//String preconditionPlan = generator.makePreconditionPlan();
 		//System.out.println("parse precondition plan");
@@ -98,7 +101,8 @@ public class ServiceModelGenerator {
 			gl = GLFactory.newGLFromGLString(glString);
 			argument.setName(gl.getExpression(0).asGeneralizedList().getName());
 			argument.setGlGoal(gl.getExpression(0).asGeneralizedList());
-			argument.setPrecondition(gl.getExpression(1).asGeneralizedList());
+			argument.setGoalType(gl.getExpression(1).asGeneralizedList().getExpression(0).asValue().stringValue());
+			argument.setPrecondition(gl.getExpression(2).asGeneralizedList());
 			
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
@@ -134,13 +138,39 @@ public class ServiceModelGenerator {
 		System.out.println("assert workflow context");
 		taskReasoner.assertFact("GeneratedService", removeQuotationMarks(servicePackageName));
 	}
-	
+	private String makePostWorkflowPlan() {
+		StringBuilder planBuilder = new StringBuilder();
+		
+		System.out.println("make postWorkflow plan");
+		planBuilder.append("PLAN CONCLUDE PostWorkflow() {\n"
+				+ "ID : \"PostWorkflow" + removeQuotationMarks(servicePackageName) + "\"\n"
+				+ "PRECONDITION : \n"
+				+ "FACT TaskReasoner($reasoner);\n");
+		
+		for(int i = 0; i < precondition.getExpressionsSize(); i++) {
+			String stringPrecondition = makePredicateFromGL(precondition.getExpression(i).asGeneralizedList());
+			planBuilder.append("FACT " + stringPrecondition + ";\n");
+		}
+		planBuilder.append("BODY :\n"
+				+ "System.out.println(\"post workflow\");\n"
+				+ "$workflowID = $reasoner.getWorkflowID(" + servicePackageName+ ");\n");
+		planBuilder.append(" POST PERFORM ThrowWorkflowGoal($workflowID, " + servicePackageName + ");\n"
+				+ "RETRACT PostWorkflow();");
+		
+		for(int i = 0; i < precondition.getExpressionsSize(); i++) {
+			String stringPrecondition = makePredicateFromGL(precondition.getExpression(i).asGeneralizedList());
+			planBuilder.append("RETRACT " + stringPrecondition + ";\n");
+		}
+		
+		planBuilder.append("UTILITY : 20000;\n}");
+		return planBuilder.toString();
+	}
 	private String makeWorkflowPlan() {		
 		StringBuilder planBuilder = new StringBuilder();
 		
 		System.out.println("make workflow plan");
 			
-		planBuilder.append("PLAN ACHIEVE ThrowWorkflowGoal($serviceName) {\n"
+		planBuilder.append("PLAN PERFORM ThrowWorkflowGoal($workflowID, $serviceName) {\n"
 				+ "ID : " + servicePackageID + "\n"
 				+ "PRECONDITION : \n"
 				+ "$serviceName == " + servicePackageName + ";\n"
@@ -150,26 +180,17 @@ public class ServiceModelGenerator {
 			String stringPrecondition = makePredicateFromGL(precondition.getExpression(i).asGeneralizedList());
 			planBuilder.append("FACT " + stringPrecondition + ";\n");
 		}
-		/*
-		for(int i = 0; i < trigger.getExpressionsSize(); i++) {
-			String precondition = makePredicateFromGL(trigger.getExpression(i).asGeneralizedList());
-			planBuilder.append("fact " + precondition + ";\n");
-		}
-		for(int i = 0; i < required.getExpressionsSize(); i++) {
-			String precondition = makePredicateFromGL(required.getExpression(i).asGeneralizedList());
-			planBuilder.append("fact " + precondition + ";\n");
-		}
-		*/
+		
 		
 		planBuilder.append("BODY :\n"
-				+ "System.out.println(\"start workflow\");\n"
-				+ "System.out.println(\"==== current utility ====\");\n"
-				+ "System.out.println($calculator.getServiceUtility($serviceName));\n"
-				+ "PERFORM ChangeCurrentService(" + servicePackageName + "," + servicePackageID + ", $goalName);\n");
+				+ "System.out.println(\"start workflow : \" + $workflowID);\n");
+				//+ "System.out.println(\"==== current utility ====\");\n"
+				//+ "System.out.println($calculator.getServiceUtility($serviceName));\n"
+				//+ "PERFORM ChangeCurrentService(" + servicePackageName + "," + servicePackageID + ", $goalName);\n");
 		
 		for(int i = 0; i < workflow.getExpressionsSize(); i++) {
 			String goalName = removeQuotationMarks(workflow.getExpression(i).toString());
-			planBuilder.append("PERFORM ThrowGoal(\"" + goalName + "\" , " + servicePackageName + "," + servicePackageID +  ");\n" );
+			planBuilder.append("PERFORM ThrowGoal($workflowID, \"" + goalName + "\");\n" );
 		}
 		
 		planBuilder.append("ASSERT ServiceFinished("+servicePackageName + ", " +servicePackageID + ");\n"
@@ -237,29 +258,50 @@ public class ServiceModelGenerator {
 		StringBuilder planBuilder = new StringBuilder();
 		GeneralizedList glGoal = argument.getGlGoal();
 		GeneralizedList preconditionList = argument.getPrecondition();
-			String goalName = glGoal.getName();
+		String goalName = glGoal.getName();
 		
-		planBuilder.append("PLAN PERFORM ThrowGoal($goalName, $serviceName, $serviceID) {\n"
-				+ "ID : \"" + goalName + "\"\n"
-				+ "PRECONDITION :\n"
-				+ "fact TaskReasoner($taskReasoner);\n"
-				+ "fact LoggerManager($lm);\n"
-				+ "$goalName == \"" + goalName +"\";\n");
-		
-		for (int i = 0; i < preconditionList.getExpressionsSize(); i++) {
-			planBuilder.append("fact "+ 
-				makePredicateFromGL(preconditionList.getExpression(i).asGeneralizedList()) + ";\n");
+		if(argument.getGoalType().equals("perform")) {
+			planBuilder.append("PLAN PERFORM ThrowGoal($workflowID, $goalName) {\n"
+					+ "ID : \"" + goalName + "\"\n"
+					+ "PRECONDITION :\n"
+					+ "fact TaskReasoner($taskReasoner);\n"
+					+ "fact LoggerManager($lm);\n"
+					+ "$goalName == \"" + goalName +"\";\n");
+			
+			for (int i = 0; i < preconditionList.getExpressionsSize(); i++) {
+				planBuilder.append("fact "+ 
+					makePredicateFromGL(preconditionList.getExpression(i).asGeneralizedList()) + ";\n");
+			}
+			
+			planBuilder.append("BODY :\n"
+					+ "$arg = $lm.generateGoalPostArgument($serviceName, \"" + goalName +"\",");
+			for(int i = 0; i < glGoal.getExpressionsSize() ; i++) {
+				planBuilder.append(glGoal.getExpression(i).toString() + ",");
+			}
+			planBuilder.deleteCharAt(planBuilder.length() - 1);
+			planBuilder.append(");\n");
+			planBuilder.append("$lm.action(\"goalPost\", $arg);\n"
+					+ "PERFORM WaitGoalComplete(\"" + goalName+"\");\n");
+			planBuilder.append("UTILITY : 100;\n}");
+			
+		} else if (argument.getGoalType().equals("conclude")) {
+			planBuilder.append("PLAN PERFORM ThrowGoal($goalName) {\n"
+					+ "ID : \"" + goalName + "\"\n"
+					+ "PRECONDITION :\n"
+					+ "fact TaskReasoner($taskReasoner);\n"
+					+ "$goalName == \"" + goalName +"\";\n");
+			
+			for (int i = 0; i < preconditionList.getExpressionsSize(); i++) {
+				planBuilder.append("fact "+ 
+					makePredicateFromGL(preconditionList.getExpression(i).asGeneralizedList()) + ";\n");
+			}
+			
+			planBuilder.append("BODY : ");
+			planBuilder.append("PERFORM WaitGoalComplete(\"" + goalName+"\");\n");
+			planBuilder.append("UTILITY : -100;\n}");
+		} else if (argument.getGoalType().equals("achieve")){
+			//TODO
 		}
-		
-		planBuilder.append("BODY :\n"
-				+ "PERFORM UpdateCurrentService($serviceName, $serviceID, \""+goalName+"\");\n"
-				+ "$arg = $lm.generateGoalPostArgument($serviceName, \"" + goalName +"\",");
-		for(int i = 0; i < glGoal.getExpressionsSize() ; i++) {
-			planBuilder.append(glGoal.getExpression(i).toString() + ",");
-		}
-		planBuilder.deleteCharAt(planBuilder.length() - 1);
-		planBuilder.append(");\n");
-		planBuilder.append("$lm.action(\"goalPost\", $arg);\n}");
 		
 		return planBuilder.toString();
 			

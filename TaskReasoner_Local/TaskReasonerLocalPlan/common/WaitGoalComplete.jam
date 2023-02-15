@@ -5,9 +5,10 @@ PREFIXES:
 PLAN PERFORM WaitGoalComplete($goal) {
 	ID : "WaitGoalComplete"
 	PRECONDITION :
-		FACT GoalComplete($goal);
+		FACT GoalCompleted($goal);
 	BODY :
-		RETRACT GoalComplete($goal);
+		System.out.println("GoalCompleted! : " + $goal);
+		RETRACT GoalCompleted($goal);
 		
-	UTILITY : 90;
+	UTILITY : 50;
 }

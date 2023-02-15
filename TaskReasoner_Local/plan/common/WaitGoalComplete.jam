@@ -1,0 +1,13 @@
+
+PREFIXES:
+	PREFIX arbi: <http://www.arbi.com//ontologies#>;
+	PREFIX isro: <http://www.arbi.com//BuiltInPlan#>;		
+	
+PLAN PERFORM WaitGoalComplete($goal) {
+	ID : "WaitGoalComplete"
+	PRECONDITION :
+		FACT GoalCompleted($goal);
+	BODY :
+		RETRACT GoalCompleted($goal);
+	UTILITY :10;
+}

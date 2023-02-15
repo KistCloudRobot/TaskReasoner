@@ -27,7 +27,7 @@ public class GLMessageManager {
 		ds.assertFact(gl);
 	}
 	
-	public void assertContext(GeneralizedList glContext) {
+	public void assertGL(GeneralizedList glContext) {
 		String glName;
 		
 		glName = glContext.getName();
@@ -50,10 +50,10 @@ public class GLMessageManager {
 				}
 			}
 			interpreter.getWorldModel().assertFact(glName, objectList);
-			System.out.println("Assert context : " + glName);
+			//System.out.println("Assert context : " + glName);
 		}else {
 			interpreter.getWorldModel().assertFact(glName);
-			System.out.println("Assert context : " + glName);
+			//System.out.println("Assert context : " + glName);
 		}
 	}
 	

@@ -1,0 +1,28 @@
+	
+PLAN PERFORM ThrowWorkflow() {
+	ID : "logisticManagerWorkflow"
+	PRECONDITION :
+	BODY :
+	
+		System.out.println("PalletTransportedRequestedTo start");
+		PERFORM ThrowGoal("PalletTransportedRequestedTo");
+		System.out.println("PalletTransportedRequestedTo complete");
+		
+		System.out.println("PalletTransportedReportedFrom start");
+		PERFORM WaitGoalComplete("PalletTransportedReportedFrom");	
+		System.out.println("PalletTransportedReportedFrom end");
+		
+		PERFORM FinalizeService();
+		ASSERT PostWorkflowGoals();
+		
+	UTILITY : 10000;
+}
+
+
+PLAN PERFORM FinalizeService(){
+	ID : "FinalizelogisticManagerService"
+	PRECONDITION :
+	BODY :
+		System.out.println("start finalized service");
+	UTILITY : 10000;
+}

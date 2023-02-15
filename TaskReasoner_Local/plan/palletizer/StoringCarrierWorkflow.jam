@@ -1,0 +1,25 @@
+PREFIXES:
+	PREFIX arbi: <http://www.arbi.com//ontologies#>;
+	PREFIX isro: <http://www.arbi.com//BuiltInPlan#>;		
+	
+PLAN PERFORM ThrowWorkflow() {
+	ID : "PalletizerWorkflow1"
+	PRECONDITION :
+	BODY :
+	
+		System.out.println("PalletTransportedRequestedFrom start");
+		PERFORM WaitGoalComplete("RackLoadingPreparedRequestedFrom");
+		System.out.println("PalletTransportedRequestedFrom complete");
+		
+		PERFORM FinalizeService();
+		ASSERT PostWorkflowGoals();
+		
+	UTILITY : 1000;
+}
+PLAN PERFORM FinalizeService(){
+	ID : "FinalizeStoringPalletizer"
+	PRECONDITION :
+	BODY :
+		System.out.println("start finalized service");
+	UTILITY : 100000;
+}

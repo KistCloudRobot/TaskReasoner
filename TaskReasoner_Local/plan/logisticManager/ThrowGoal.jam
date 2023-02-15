@@ -1,0 +1,12 @@
+
+PLAN PERFORM ThrowGoal($goalName) {
+	ID : "ThrowGoalPalletTransportedRequestedTo"
+	PRECONDITION :
+		FACT TaskReasoner($reasoner);
+		$goalName == "PalletTransportedRequestedTo";
+	BODY :
+		$data = "(PalletTransportedRequestedTo $arg1 $arg2 $arg3)";
+		$reasoner.sendToTM("PostGoal", $data);
+		PERFORM WaitGoalComplete($goalName);
+	UTILITY : 10;
+}

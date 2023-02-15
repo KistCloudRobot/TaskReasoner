@@ -1,0 +1,34 @@
+import kr.ac.uos.ai.robot.intelligent.TaskReasoner;
+
+PREFIXES:
+	PREFIX arbi: <http://www.arbi.com//ontologies#>;
+	PREFIX isro: <http://www.arbi.com//BuiltInPlan#>;		
+
+GOALS :
+	maintain alive():UTILITY -10000;
+	perform boot();
+
+//FACTS :
+
+OBSERVER: {
+	FACT TaskReasoner($taskReasoner);
+	$taskReasoner.dequeueMessage();
+}
+
+PLAN PERFORM boot() {
+	ID : "BOOTPLAN"
+	BODY :
+		System.out.println("booting process start");
+		
+		RETRIEVE TaskReasoner($taskReasoner);
+		
+		$taskReasoner.loadPlan("./plan/planList.jam");
+		
+		PERFORM loadPlanPackage();
+		
+		ASSERT PostWorkflowGoals();
+		
+		
+		System.out.println("boot success");
+	UTILITY : 100;
+}

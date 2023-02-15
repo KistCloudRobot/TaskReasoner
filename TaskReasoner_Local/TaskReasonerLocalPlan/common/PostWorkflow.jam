@@ -1,0 +1,7 @@
+PLAN CONCLUDE PostWorkflow() {
+	ID : "DoNotPostAnyWorkflow"
+	BODY :
+		System.out.println("There is no workflow to post");
+		RETRACT PostWorkflow();
+	Utility : 10;
+}

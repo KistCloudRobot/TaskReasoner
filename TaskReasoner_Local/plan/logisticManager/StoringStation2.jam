@@ -1,0 +1,49 @@
+PREFIXES:
+	PREFIX arbi: <http://www.arbi.com//ontologies#>;
+	PREFIX isro: <http://www.arbi.com//BuiltInPlan#>;		
+	
+PLAN PERFORM StoringStation2() {
+	ID : "LogisticManagerWorkflowStoringStation2"
+	PRECONDITION :
+		FACT TaskReasoner($reasoner);
+	BODY :
+		System.out.println("\n\n service start STORING at Station2 \n\n");
+		
+		POST PERFORM RequestFlowStoringStation2();
+		
+		POST PERFORM ReportFlowStoringStation2();
+		
+		System.out.println("StoringStation2 finished!");
+		
+	UTILITY : 20;
+}
+
+PLAN ACHIEVE RequestFlowStoringStation2() {
+	ID : "StoringStation2RequestFlow"
+	PRECONDITION :
+		FACT TaskReasoner($reasoner);
+	BODY :
+		System.out.println("\n requestflow START STORING Station2 \n");
+		
+		PERFORM ThrowGoal("PalletTransportedRequestedTo");
+
+		System.out.println("\n requestflow END STORING Station2 \n");
+	UTILITY : 100;
+}
+
+PLAN PERFORM ReportFlowStoringStation2() {
+	ID : "StoringStation2ReportFlow"
+	PRECONDITION :
+		FACT RequestFlowStoringStation2();
+		FACT TaskReasoner($reasoner);
+	BODY :
+		System.out.println("\n reportflow START STORING Station2 \n");
+		
+		PERFORM WaitGoalComplete("PalletTransportedReportedFrom");
+		
+		RETRACT RequestFlowStoringStation2();
+		
+		System.out.println("\n reportflow END STORING Station2 \n");
+		
+	UTILITY : 30;
+}

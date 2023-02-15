@@ -16,7 +16,7 @@ public class AssertContextAction implements ActionBody{
 		ContextArgument argument = (ContextArgument) o;
 		
 		System.out.println("assert context");
-		glMessageManager.assertContext(argument.getGlContext());
+		glMessageManager.assertGL(argument.getGlContext());
 		
 		return null;
 	}
