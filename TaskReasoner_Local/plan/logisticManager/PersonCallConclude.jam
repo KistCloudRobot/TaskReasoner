@@ -113,4 +113,3 @@ PLAN Conclude PersonCall($callID,$location,$cmd){
 		RETRACT PersonCall($callID,$location,$cmd);
 	utility : 2000;
 }
-

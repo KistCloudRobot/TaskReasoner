@@ -21,7 +21,7 @@ PLAN PERFORM ThrowWorkflow() {
 		
 		System.out.println("PalletTransportedReportedTo end");
 		
-		//PERFORM ThrowGoal("ReturnToWait");
+		PERFORM ThrowGoal("ReturnToWait");
 		PERFORM FinalizeService();
 		ASSERT PostWorkflowGoals();
 		

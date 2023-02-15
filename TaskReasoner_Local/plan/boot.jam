@@ -22,9 +22,7 @@ PLAN PERFORM boot() {
 		
 		RETRIEVE TaskReasoner($taskReasoner);
 		
-		RETRIEVE RobotPlanPath($path);
-		
-		$taskReasoner.loadPlan($path);
+		$taskReasoner.loadPlan("./plan/planList.jam");
 		
 		PERFORM loadPlanPackage();
 		
