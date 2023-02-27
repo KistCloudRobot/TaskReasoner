@@ -9,7 +9,6 @@ public class TaskReasoner_Palletizer {
 		String role = "palletizer";
 		String brokerAddress = "172.16.165.143";
 		int port = 61112;
-		BrokerType brokerType = BrokerType.ACTIVEMQ;
-		TaskReasoner reasoner = new TaskReasoner(role, brokerAddress, port, brokerType);
+		TaskReasoner reasoner = new TaskReasoner(role, brokerAddress, port);
 	}
 }

@@ -9,7 +9,6 @@ public class TaskReasoner_Lift4 {
 		String role = "carrier";
 		String brokerAddress = "172.16.165.143";
 		int port = 61113;
-		BrokerType brokerType = BrokerType.ACTIVEMQ;
-		TaskReasoner reasoner = new TaskReasoner(role, brokerAddress, port, brokerType);
+		TaskReasoner reasoner = new TaskReasoner(role, brokerAddress, port);
 	}
 }

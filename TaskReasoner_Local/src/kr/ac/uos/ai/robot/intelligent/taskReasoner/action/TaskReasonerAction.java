@@ -1,9 +1,9 @@
 package kr.ac.uos.ai.robot.intelligent.taskReasoner.action;
 
 
-import kr.ac.uos.ai.arbi.agent.logger.AgentAction;
 import kr.ac.uos.ai.arbi.agent.logger.LogTiming;
 import kr.ac.uos.ai.arbi.agent.logger.LoggerManager;
+import kr.ac.uos.ai.arbi.agent.logger.action.AgentAction;
 import kr.ac.uos.ai.arbi.model.GLFactory;
 import kr.ac.uos.ai.arbi.model.GeneralizedList;
 import kr.ac.uos.ai.arbi.model.parser.ParseException;

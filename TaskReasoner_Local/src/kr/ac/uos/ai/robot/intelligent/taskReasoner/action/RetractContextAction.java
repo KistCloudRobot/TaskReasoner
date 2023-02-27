@@ -1,6 +1,6 @@
 package kr.ac.uos.ai.robot.intelligent.taskReasoner.action;
 
-import kr.ac.uos.ai.arbi.agent.logger.ActionBody;
+import kr.ac.uos.ai.arbi.agent.logger.action.ActionBody;
 import kr.ac.uos.ai.robot.intelligent.taskReasoner.message.GLMessageManager;
 
 public class RetractContextAction implements ActionBody{

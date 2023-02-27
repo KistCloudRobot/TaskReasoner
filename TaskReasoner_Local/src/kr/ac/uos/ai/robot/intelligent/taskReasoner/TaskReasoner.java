@@ -77,13 +77,13 @@ public class TaskReasoner extends ArbiAgent {
 //		init();
 //	}
 
-	public TaskReasoner(String role, String brokerAddress, int port, BrokerType brokerType) {
+	public TaskReasoner(String role, String brokerAddress, int port) {
 		ENV_JMS_BROKER = brokerAddress;
 		interpreter = JAM.parse(new String[] { "./plan/boot.jam" });
 
 		ds = new TaskReasonerDataSource(this);
 
-		ds.connect(ENV_JMS_BROKER, port, dsURIPrefix + TASKREASONER_ADDRESS, brokerType);
+		ds.connect(ENV_JMS_BROKER, port, dsURIPrefix + TASKREASONER_ADDRESS, BrokerType.ACTIVEMQ);
 		messageQueue = new LinkedBlockingQueue<RecievedMessage>();
 		glMessageManager = new GLMessageManager(interpreter, ds);
 		planLoader = new PlanLoader(interpreter);
@@ -92,7 +92,7 @@ public class TaskReasoner extends ArbiAgent {
 		jsonMessageManager = new JsonMessageManager(policyHandler);
 		utilityCalculator = new UtilityCalculator(interpreter);
 
-		ArbiAgentExecutor.execute(ENV_JMS_BROKER,port , agentURIPrefix + TASKREASONER_ADDRESS, this, brokerType);
+		ArbiAgentExecutor.execute(ENV_JMS_BROKER,port , agentURIPrefix + TASKREASONER_ADDRESS, this, BrokerType.ACTIVEMQ);
 
 		loggerManager = LoggerManager.getInstance();
 
@@ -308,7 +308,7 @@ public class TaskReasoner extends ArbiAgent {
 			port = Integer.parseInt(args[2]);
 		}
 		
-		TaskReasoner agent = new TaskReasoner(robotID, brokerAddress,port, BrokerType.ACTIVEMQ);
+		TaskReasoner agent = new TaskReasoner(robotID, brokerAddress,port);
 	}
 
 	

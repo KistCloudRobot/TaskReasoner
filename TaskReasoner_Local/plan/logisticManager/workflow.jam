@@ -15,7 +15,7 @@ PLAN PERFORM ThrowWorkflow() {
 		PERFORM FinalizeService();
 		ASSERT PostWorkflowGoals();
 		
-	UTILITY : 10000;
+	UTILITY : 1;
 }
 
 

@@ -7,9 +7,8 @@ public class TaskReasoner_Lift1 {
 	
 	public static void main(String[] args) {
 		String role = "carrier";
-		String brokerAddress = "172.16.165.143";
+		String brokerAddress = "172.16.165.158";
 		int port = 61116;
-		BrokerType brokerType = BrokerType.ACTIVEMQ;
-		TaskReasoner reasoner = new TaskReasoner(role, brokerAddress, port, brokerType);
+		TaskReasoner reasoner = new TaskReasoner(role, brokerAddress, port);
 	}
 }
