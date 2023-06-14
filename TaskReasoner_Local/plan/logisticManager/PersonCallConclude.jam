@@ -2,20 +2,16 @@ PREFIXES:
 	PREFIX arbi: <http://www.arbi.com//ontologies#>;
 	PREFIX isro: <http://www.arbi.com//BuiltInPlan#>;		
 
-PLAN Conclude PersonCall($callID,$location,$cmd){
-	ID : "personCallConcludePrepareStoringStation1"
+PLAN Conclude PersonCall($callID,$commands){
+	ID : "personCallConclude"
 	precondition:
 		FACT TaskReasoner($reasoner);
-		$cmd == "PrepareStoring";
-		$location == "http://www.arbi.com/ontologies/arbi.owl#station1";
 	body:
-	
-		System.out.println("PrepareStoring station1 personcall start");
-		POST PERFORM PrepareStoringStation1();
-		RETRACT PersonCall($callID,$location,$cmd);
+		POST PERFORM ThrowWorkflow();
+		RETRACT PersonCall($callID,$commands);
 	utility : 2000;
 }
-
+/*
 PLAN Conclude PersonCall($callID,$location,$cmd){
 	ID : "personCallConcludePrepareStoringStation2"
 	precondition:
@@ -113,3 +109,4 @@ PLAN Conclude PersonCall($callID,$location,$cmd){
 		RETRACT PersonCall($callID,$location,$cmd);
 	utility : 2000;
 }
+*/
