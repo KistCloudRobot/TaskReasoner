@@ -4,16 +4,16 @@ PLAN PERFORM ThrowWorkflow() {
 	PRECONDITION :
 	BODY :
 	
-		//System.out.println("PalletTransportedRequestedTo start");
+		System.out.println("PalletTransportedRequestedTo start");
 		PERFORM ThrowGoal("PalletTransportedRequestedTo");
-		//System.out.println("PalletTransportedRequestedTo complete");
+		System.out.println("PalletTransportedRequestedTo complete");
 		
-		//System.out.println("PalletTransportedReportedFrom start");
-		POST PERFORM WaitGoalComplete("PalletTransportedReportedFrom");	
-		//System.out.println("PalletTransportedReportedFrom end");
+		System.out.println("PalletTransportedReportedFrom start");
+		PERFORM WaitGoalComplete("PalletTransportedReportedFrom");	
+		System.out.println("PalletTransportedReportedFrom end");
 		
 		//PERFORM FinalizeService();
-		//ASSERT PostWorkflowGoals();
+		ASSERT PostWorkflowGoals();
 		
 	UTILITY : 1;
 }

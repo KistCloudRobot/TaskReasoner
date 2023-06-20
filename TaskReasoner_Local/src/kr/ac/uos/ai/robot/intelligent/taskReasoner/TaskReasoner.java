@@ -158,7 +158,7 @@ public class TaskReasoner extends ArbiAgent {
 		// ds.subscribe(subscriveGoal);
 		// (goal (goalName ))
 
-		String subscriveContext = "(rule (fact (context (PersonCall $callID $location $cmd))) --> (notify (context (PersonCall $callID $location $cmd))))";
+		String subscriveContext = "(rule (fact (context (PersonCall $callID $location))) --> (notify (context (PersonCall $callID $location))))";
 		System.out.println(ds.subscribe(subscriveContext));
 		// String subscriveContext = "(rule (fact (context $context)) --> (notify
 		// (context $context)))";
