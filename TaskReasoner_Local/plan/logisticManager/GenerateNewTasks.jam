@@ -1,0 +1,45 @@
+PLAN PERFORM GenerateNewTasks() {
+	ID: "http://www.arbi.com//GenerateNewTasks1"
+	PRECONDITION:
+		FACT TaskGenerator($generator);
+		FACT TaskReasoner($taskReasoner);
+		FACT AssignedLogisticsCenter($location);
+		$location == "real";
+	BODY:
+		PERFORM isro:startLog("PERFORM", "GenerateNewTasks");
+
+		PERFORM CheckStationStatus("http://www.arbi.com/ontologies/arbi.owl#station1", 1, $status1);
+		PERFORM CheckStationStatus("http://www.arbi.com/ontologies/arbi.owl#station2", 2, $status2);
+		PERFORM CheckStationStatus("http://www.arbi.com/ontologies/arbi.owl#station3", 3, $status3);
+		PERFORM CheckStationStatus("http://www.arbi.com/ontologies/arbi.owl#station4", 4, $status4);
+		
+		$data = $generator.generatePotenitTasks($status1, $status2, $status3, $status4);
+		
+		$taskReasoner.sentToTM($data);
+		
+		PERFORM isro:endLog("PERFORM", "GenerateNewTasks");
+	UTILITY: 10; 
+}
+
+PLAN PERFORM GenerateNewTasks() {
+	ID: "http://www.arbi.com//GenerateNewTasks2"
+	PRECONDITION:
+		FACT TaskGenerator($generator);
+		FACT TaskReasoner($taskReasoner);
+		FACT AssignedLogisticsCenter($location);
+		$location == "simulation";
+	BODY:
+		PERFORM isro:startLog("PERFORM", "GenerateNewTasks");
+
+		PERFORM CheckStationStatus("http://www.arbi.com/ontologies/arbi.owl#station1001", 1001, $status1);
+		PERFORM CheckStationStatus("http://www.arbi.com/ontologies/arbi.owl#station1002", 1002, $status2);
+		PERFORM CheckStationStatus("http://www.arbi.com/ontologies/arbi.owl#station1003", 1003, $status3);
+		PERFORM CheckStationStatus("http://www.arbi.com/ontologies/arbi.owl#station1004", 1004, $status4);
+		
+		$data = $generator.generateIsaacTasks($status1, $status2, $status3, $status4);
+		
+		$taskReasoner.sentToTM($data);
+		
+		PERFORM isro:endLog("PERFORM", "GenerateNewTasks");
+	UTILITY: 10; 
+}

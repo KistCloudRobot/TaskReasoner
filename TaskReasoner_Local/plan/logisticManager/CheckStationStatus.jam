@@ -1,0 +1,37 @@
+PLAN PERFORM CheckStationStatus($station, $stationVertex, $status) {
+	ID: "http://www.arbi.com//CheckStationStatusOccupiedStation"
+	PRECONDITION:
+		FACT OccupiedStation($goalID, $station); 
+	BODY:
+		PERFORM isro:startLog("PERFORM", "CheckStationStatus - using");
+
+		$status = "using";
+				
+		PERFORM isro:endLog("PERFORM", "CheckStationStatus");
+	UTILITY: 100; 
+}
+
+PLAN PERFORM CheckStationStatus($station, $stationVertex, $status) {
+	ID: "http://www.arbi.com//CheckStationStatusRackExist"
+	PRECONDITION:
+		FACT rackAt($rackID, $stationVertex, $stationVertex); 
+	BODY:
+		PERFORM isro:startLog("PERFORM", "CheckStationStatus - exist");
+
+		$status = "exist";
+				
+		PERFORM isro:endLog("PERFORM", "CheckStationStatus");
+	UTILITY: 10; 
+}
+
+PLAN PERFORM CheckStationStatus($station, $stationVertex, $status) {
+	ID: "http://www.arbi.com//CheckStationStatusRackEmpty"
+	PRECONDITION:
+	BODY:
+		PERFORM isro:startLog("PERFORM", "CheckStationStatus - empty");
+
+		$status = "empty";
+				
+		PERFORM isro:endLog("PERFORM", "CheckStationStatus");
+	UTILITY: 1; 
+}

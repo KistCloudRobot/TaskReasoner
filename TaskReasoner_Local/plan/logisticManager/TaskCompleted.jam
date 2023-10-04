@@ -1,0 +1,17 @@
+PREFIXES:
+		PREFIX isro: <http://www.arbi.com//BuiltInPlan#>;
+
+PLAN CONCLUDE TaskCompleted($env, $goalID) {
+	ID: "http://www.arbi.com//TaskCompletedReal"
+	PRECONDITION :
+	BODY:
+		PERFORM isro:startLog("CONCLUDE", "TaskCompleted");
+		
+		RETRACT OccupiedStation($goalID, $location);
+		
+		PERFORM isro:endLog("CONCLUDE", "TaskCompleted");
+	EFFECTS :
+		RETRACT TaskCompleted($env, $goalID);
+	UTILITY: 10; 
+}
+

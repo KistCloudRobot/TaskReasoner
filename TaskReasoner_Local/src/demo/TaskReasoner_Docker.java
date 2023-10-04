@@ -4,7 +4,7 @@ import kr.ac.uos.ai.robot.intelligent.taskReasoner.TaskReasoner;
 
 public class TaskReasoner_Docker {
 	public static void main(String[] args) {
-		String role = System.getenv("ROLE");
+		String role = System.getenv("AGENT_ID");
 		String brokerAddress = System.getenv("BROKER_ADDRESS");
 		String stringPort = System.getenv("BROKER_PORT");
 		int port = Integer.parseInt(stringPort);

@@ -1,0 +1,45 @@
+PREFIXES:
+		PREFIX isro: <http://www.arbi.com//BuiltInPlan#>;
+
+PLAN CONCLUDE context($context){
+	ID: "http://www.arbi.com//BuiltInPlan#contextDefault"
+	PRECONDITION:
+		FACT GLUtility($glUtility);
+	BODY:
+		
+		System.out.println("no update : " + $context);
+		$glUtility.assertGL($context);
+		RETRACT context($context);
+		
+	UTILITY : 10;
+}
+
+PLAN CONCLUDE context($context){
+	ID: "http://www.arbi.com//BuiltInPlan#contextrackAt"
+	PRECONDITION:
+		FACT GLUtility($glUtility);
+		$glUtility.retrieveGLName($context) == "rackAt";
+	BODY:
+		
+		$rack = $glUtility.retrieveGLExpression($context, 0);
+		RETRACT rackAt($rack, $v1, $v2);
+		$glUtility.assertGL($context);
+		RETRACT context($contextName, $context);
+		
+	UTILITY : 10000;
+}
+
+PLAN CONCLUDE context($context){
+	ID: "http://www.arbi.com//BuiltInPlan#contextcargoAt"
+	PRECONDITION:
+		FACT GLUtility($glUtility);
+		$glUtility.retrieveGLName($context) == "cargoAt";
+	BODY:
+		
+		$cargo = $glUtility.retrieveGLExpression($context, 0);
+		RETRACT cargoAt($cargo, $v1, $v2);
+		$glUtility.assertGL($context);
+		RETRACT context($context);
+		
+	UTILITY : 10000;
+}

@@ -18,6 +18,7 @@ import kr.ac.uos.ai.robot.intelligent.taskReasoner.message.JsonMessageManager;
 import kr.ac.uos.ai.robot.intelligent.taskReasoner.message.RecievedMessage;
 import kr.ac.uos.ai.robot.intelligent.taskReasoner.policy.PolicyHandler;
 import kr.ac.uos.ai.robot.intelligent.taskReasoner.service.ServiceModelGenerator;
+import kr.ac.uos.ai.robot.intelligent.taskReasoner.utility.TaskGenerator;
 import kr.ac.uos.ai.robot.intelligent.taskReasoner.utility.UtilityCalculator;
 import uos.ai.jam.Interpreter;
 import uos.ai.jam.JAM;
@@ -29,7 +30,6 @@ public class TaskReasoner extends ArbiAgent {
 	public static String ENV_ROBOT_NAME;
 	public static final String ARBI_PREFIX = "www.arbi.com/";
 
-	private static String brokerURI = "tcp://172.16.165.141:61316";
 	private static String TASKREASONER_ADDRESS = "www.arbi.com/TaskReasoner";
 	private static String TASKMANAGER_ADDRESS  = "www.arbi.com/TaskManager";
 
@@ -44,9 +44,10 @@ public class TaskReasoner extends ArbiAgent {
 	private PolicyHandler policyHandler;
 	private ServiceModelGenerator serviceModelGenerator;
 	private TaskReasonerAction taskReasonerAction;
-	private LoggerManager loggerManager;
+//	private LoggerManager loggerManager;
 	private JsonMessageManager jsonMessageManager;
 	private UtilityCalculator utilityCalculator;
+	private TaskGenerator taskGenerator;
 
 	private int workflowID;
 //
@@ -77,7 +78,7 @@ public class TaskReasoner extends ArbiAgent {
 //		init();
 //	}
 
-	public TaskReasoner(String role, String brokerAddress, int port) {
+	public TaskReasoner(String agentID, String brokerAddress, int port) {
 		ENV_JMS_BROKER = brokerAddress;
 		interpreter = JAM.parse(new String[] { "./plan/boot.jam" });
 
@@ -87,19 +88,19 @@ public class TaskReasoner extends ArbiAgent {
 		messageQueue = new LinkedBlockingQueue<RecievedMessage>();
 		glMessageManager = new GLMessageManager(interpreter, ds);
 		planLoader = new PlanLoader(interpreter);
-		serviceModelGenerator = new ServiceModelGenerator(this);
-		policyHandler = new PolicyHandler(this, interpreter);
-		jsonMessageManager = new JsonMessageManager(policyHandler);
-		utilityCalculator = new UtilityCalculator(interpreter);
+//		serviceModelGenerator = new ServiceModelGenerator(this);
+//		policyHandler = new PolicyHandler(this, interpreter);
+//		jsonMessageManager = new JsonMessageManager(policyHandler);
+//		utilityCalculator = new UtilityCalculator(interpreter);
+		
+		taskGenerator = new TaskGenerator();
 
 		ArbiAgentExecutor.execute(ENV_JMS_BROKER,port , agentURIPrefix + TASKREASONER_ADDRESS, this, BrokerType.ACTIVEMQ);
 
-		loggerManager = LoggerManager.getInstance();
+//		loggerManager = LoggerManager.getInstance();
+//		taskReasonerAction = new TaskReasonerAction(this, interpreter, loggerManager);
+		glMessageManager.assertFact("isro:agent", agentID);
 
-		taskReasonerAction = new TaskReasonerAction(this, interpreter, loggerManager);
-		
-		workflowID = 0;
-		glMessageManager.assertFact("AssignedRole",role);
 		init();
 		
 	}
@@ -118,13 +119,15 @@ public class TaskReasoner extends ArbiAgent {
 	private void init() {
 
 		glMessageManager.assertFact("GLMessageManager", glMessageManager);
-		glMessageManager.assertFact("PolicyHandler", policyHandler);
-		glMessageManager.assertFact("ServiceModelGenerator", serviceModelGenerator);
-		glMessageManager.assertFact("LoggerManager", taskReasonerAction);
+//		glMessageManager.assertFact("PolicyHandler", policyHandler);
+//		glMessageManager.assertFact("ServiceModelGenerator", serviceModelGenerator);
+//		glMessageManager.assertFact("LoggerManager", taskReasonerAction);
+		
+//		glMessageManager.assertFact("JsonMessageManager", jsonMessageManager);
+//		glMessageManager.assertFact("UtilityCalculator", utilityCalculator);
 		glMessageManager.assertFact("TaskReasoner", this);
-		glMessageManager.assertFact("JsonMessageManager", jsonMessageManager);
-		glMessageManager.assertFact("UtilityCalculator", utilityCalculator);
-
+		glMessageManager.assertFact("TaskGenerator", taskGenerator);
+		
 		Thread t = new Thread() {
 			public void run() {
 				interpreter.run();
@@ -158,11 +161,10 @@ public class TaskReasoner extends ArbiAgent {
 		// ds.subscribe(subscriveGoal);
 		// (goal (goalName ))
 
-		String subscriveContext = "(rule (fact (context (PersonCall $callID $location))) --> (notify (context (PersonCall $callID $location))))";
+//		String subscriveContext = "(rule (fact (context (PersonCall $callID $location))) --> (notify (context (PersonCall $callID $location))))";
+//		System.out.println(ds.subscribe(subscriveContext));
+		String subscriveContext = "(rule (fact (context (rackAt $a $b $c))) --> (notify (context (rackAt $a $b $c)))";
 		System.out.println(ds.subscribe(subscriveContext));
-		// String subscriveContext = "(rule (fact (context $context)) --> (notify
-		// (context $context)))";
-		// System.out.println(ds.subscribe(subscriveContext));
 
 		System.out.println("reasoner boot complete!");
 
@@ -232,9 +234,9 @@ public class TaskReasoner extends ArbiAgent {
 		}
 	}
 
-	public boolean sendToTM(String type, String gl) {
-		System.out.println("send to tm : " + type + ", " + gl);
-		this.send(agentURIPrefix + TASKMANAGER_ADDRESS, "(" + type + " " + gl + ")");
+	public boolean sendToTM(String data) {
+		System.out.println("send to tm : " + data);
+		this.send(agentURIPrefix + TASKMANAGER_ADDRESS, data);
 
 		return true;
 	}

@@ -1,0 +1,16 @@
+PREFIXES:
+		PREFIX isro: <http://www.arbi.com//BuiltInPlan#>;
+
+PLAN CONCLUDE releasedCargo($v1, $v2, $v3) {
+	ID: "http://www.arbi.com//releasedCargo"
+	PRECONDITION :
+	BODY:
+		PERFORM isro:startLog("CONCLUDE", "releasedCargo");
+		
+		PERFORM GenerateNewTasks();
+		
+		PERFORM isro:endLog("CONCLUDE", "releasedCargo");
+	EFFECTS :
+		RETRACT releasedCargo($v1, $v2, $v3);
+	UTILITY: 10000; 
+}
