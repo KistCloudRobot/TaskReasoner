@@ -3,8 +3,8 @@ PLAN PERFORM GenerateNewTasks() {
 	PRECONDITION:
 		FACT TaskGenerator($generator);
 		FACT TaskReasoner($taskReasoner);
-		FACT AssignedLogisticsCenter($location);
-		$location == "real";
+		FACT isro:agent($agent);
+		$agent == "agent://www.mcarbi.com/Local1";
 	BODY:
 		PERFORM isro:startLog("PERFORM", "GenerateNewTasks");
 
@@ -26,8 +26,8 @@ PLAN PERFORM GenerateNewTasks() {
 	PRECONDITION:
 		FACT TaskGenerator($generator);
 		FACT TaskReasoner($taskReasoner);
-		FACT AssignedLogisticsCenter($location);
-		$location == "simulation";
+		FACT isro:agent($agent);
+		$agent == "agent://www.mcarbi.com/Local2";
 	BODY:
 		PERFORM isro:startLog("PERFORM", "GenerateNewTasks");
 
