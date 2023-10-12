@@ -11,6 +11,22 @@ PLAN CONCLUDE receivedCargo($v1, $v2, $v3) {
 		
 		PERFORM isro:endLog("CONCLUDE", "receivedCargo");
 	EFFECTS :
-		RETRACT releasedCargo($v1, $v2, $v3);
+		RETRACT receivedCargo($v1, $v2, $v3);
 	UTILITY: 10000; 
+}
+
+PLAN CONCLUDE receivedCargo($v1, $v2, $v3) {
+	ID: "http://www.arbi.com//receivedCargo2"
+	PRECONDITION :
+		FACT isro:agent($agent);
+		$agent == "agent://www.mcarbi.com/Local2";
+	BODY:
+		PERFORM isro:startLog("CONCLUDE", "receivedCargo");
+		
+		PERFORM GenerateIsaacStoringTasks();
+		
+		PERFORM isro:endLog("CONCLUDE", "receivedCargo");
+	EFFECTS :
+		RETRACT receivedCargo($v1, $v2, $v3);
+	UTILITY: 10001; 
 }

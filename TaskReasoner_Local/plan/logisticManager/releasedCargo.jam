@@ -4,10 +4,12 @@ PREFIXES:
 PLAN CONCLUDE releasedCargo($v1, $v2, $v3) {
 	ID: "http://www.arbi.com//releasedCargo"
 	PRECONDITION :
+		FACT isro:agent($agent);
+		$agent == "agent://www.mcarbi.com/Local2";
 	BODY:
 		PERFORM isro:startLog("CONCLUDE", "releasedCargo");
 		
-		PERFORM GenerateNewTasks();
+		PERFORM GenerateIsaacUnstoringTasks();
 		
 		PERFORM isro:endLog("CONCLUDE", "releasedCargo");
 	EFFECTS :

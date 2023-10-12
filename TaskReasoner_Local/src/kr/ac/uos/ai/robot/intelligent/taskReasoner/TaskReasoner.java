@@ -12,7 +12,6 @@ import kr.ac.uos.ai.arbi.model.GLFactory;
 import kr.ac.uos.ai.arbi.model.GeneralizedList;
 import kr.ac.uos.ai.arbi.model.parser.ParseException;
 import kr.ac.uos.ai.robot.intelligent.taskReasoner.action.TaskReasonerAction;
-import kr.ac.uos.ai.robot.intelligent.taskReasoner.action.argument.ContextArgument;
 import kr.ac.uos.ai.robot.intelligent.taskReasoner.message.GLMessageManager;
 import kr.ac.uos.ai.robot.intelligent.taskReasoner.message.JsonMessageManager;
 import kr.ac.uos.ai.robot.intelligent.taskReasoner.message.RecievedMessage;
@@ -25,13 +24,8 @@ import uos.ai.jam.JAM;
 
 public class TaskReasoner extends ArbiAgent {
 
-	public static String ENV_JMS_BROKER;
-	public static String ENV_AGENT_NAME;
-	public static String ENV_ROBOT_NAME;
-	public static final String ARBI_PREFIX = "www.arbi.com/";
-
-	private static String TASKREASONER_ADDRESS = "www.arbi.com/TaskReasoner";
-	private static String TASKMANAGER_ADDRESS  = "www.arbi.com/TaskManager";
+	private static final String TASKREASONER_ADDRESS = "www.arbi.com/TaskReasoner";
+	private static final String TASKMANAGER_ADDRESS  = "www.arbi.com/TaskManager";
 
 	private static final String agentURIPrefix = "agent://";
 	private static final String dsURIPrefix = "ds://";
@@ -43,7 +37,7 @@ public class TaskReasoner extends ArbiAgent {
 	private PlanLoader planLoader;
 	private PolicyHandler policyHandler;
 	private ServiceModelGenerator serviceModelGenerator;
-	private TaskReasonerAction taskReasonerAction;
+//	private TaskReasonerAction taskReasonerAction;
 //	private LoggerManager loggerManager;
 	private JsonMessageManager jsonMessageManager;
 	private UtilityCalculator utilityCalculator;
@@ -79,12 +73,11 @@ public class TaskReasoner extends ArbiAgent {
 //	}
 
 	public TaskReasoner(String agentID, String brokerAddress, int port) {
-		ENV_JMS_BROKER = brokerAddress;
 		interpreter = JAM.parse(new String[] { "./plan/boot.jam" });
 
 		ds = new TaskReasonerDataSource(this);
 
-		ds.connect(ENV_JMS_BROKER, port, dsURIPrefix + TASKREASONER_ADDRESS, BrokerType.ACTIVEMQ);
+		ds.connect(brokerAddress, port, dsURIPrefix + TASKREASONER_ADDRESS, BrokerType.ACTIVEMQ);
 		messageQueue = new LinkedBlockingQueue<RecievedMessage>();
 		glMessageManager = new GLMessageManager(interpreter, ds);
 		planLoader = new PlanLoader(interpreter);
@@ -95,25 +88,14 @@ public class TaskReasoner extends ArbiAgent {
 		
 		taskGenerator = new TaskGenerator();
 
-		ArbiAgentExecutor.execute(ENV_JMS_BROKER,port , agentURIPrefix + TASKREASONER_ADDRESS, this, BrokerType.ACTIVEMQ);
+		ArbiAgentExecutor.execute(brokerAddress,port , agentURIPrefix + TASKREASONER_ADDRESS, this, BrokerType.ACTIVEMQ);
 
 //		loggerManager = LoggerManager.getInstance();
 //		taskReasonerAction = new TaskReasonerAction(this, interpreter, loggerManager);
 		glMessageManager.assertFact("isro:agent", agentID);
-
+		glMessageManager.assertFact("AssignedRole", "logisticManager");
 		init();
 		
-	}
-
-	public void initAddress() {
-		//String ip = System.getenv("JMS_BROKER");
-		//ENV_JMS_BROKER = "tcp://" + ip ;
-		//ENV_AGENT_NAME = System.getenv("AGENT");
-		//ENV_ROBOT_NAME = System.getenv("ROBOT");
-		
-		ENV_JMS_BROKER = "tcp://172.16.165.141:61313";
-
-
 	}
 
 	private void init() {
@@ -163,7 +145,7 @@ public class TaskReasoner extends ArbiAgent {
 
 //		String subscriveContext = "(rule (fact (context (PersonCall $callID $location))) --> (notify (context (PersonCall $callID $location))))";
 //		System.out.println(ds.subscribe(subscriveContext));
-		String subscriveContext = "(rule (fact (context (rackAt $a $b $c))) --> (notify (context (rackAt $a $b $c)))";
+		String subscriveContext = "(rule (fact (context (rackAt $a $b $c))) --> (notify (context (rackAt $a $b $c))))";
 		System.out.println(ds.subscribe(subscriveContext));
 
 		System.out.println("reasoner boot complete!");
@@ -172,7 +154,7 @@ public class TaskReasoner extends ArbiAgent {
 
 	@Override
 	public void onNotify(String sender, String notification) {
-		System.out.println("Notyfied from " + sender + ". Message is " + notification);
+//		System.out.println("Notyfied from " + sender + ". Message is " + notification);
 		RecievedMessage msg = new RecievedMessage(sender, notification);
 		try {
 			messageQueue.put(msg);
@@ -190,7 +172,7 @@ public class TaskReasoner extends ArbiAgent {
 	@Override
 	public void onData(String sender, String data) {
 		try {
-			//System.out.println("data  = " + data);
+//			System.out.println("data  = " + data);
 			RecievedMessage message = new RecievedMessage(sender, data);
 
 			messageQueue.put(message);
@@ -213,19 +195,20 @@ public class TaskReasoner extends ArbiAgent {
 
 				gl = GLFactory.newGLFromGLString(data);
 
-				//System.out.println("message from " + sender  + " dequeued : " + gl.toString());
+//				System.out.println("message from " + sender  + " dequeued : " + gl.toString());
 
-				if (gl.getName().equals("context")) {
-
-					glMessageManager.assertGL(gl.getExpression(0).asGeneralizedList());
-				} else if (gl.getName().equals("GoalCompleted")) {
-					System.out.println("completed goal name : " + gl.getExpression(0).asValue().stringValue());
-					glMessageManager.assertGL(gl);
-				} else if(gl.getExpression(0).isGeneralizedList()) {
-					System.out.println(gl.toString());
-				} else {
-					glMessageManager.assertFact("RecievedMessage", sender, data);
-				}
+				glMessageManager.assertGL(data);
+//				if (gl.getName().equals("context")) {
+//
+//					glMessageManager.assertGL(gl.getExpression(0).asGeneralizedList());
+//				} else if (gl.getName().equals("GoalCompleted")) {
+//					System.out.println("completed goal name : " + gl.getExpression(0).asValue().stringValue());
+//					glMessageManager.assertGL(gl);
+//				} else if(gl.getExpression(0).isGeneralizedList()) {
+//					System.out.println(gl.toString());
+//				} else {
+//					glMessageManager.assertFact("RecievedMessage", sender, data);
+//				}
 			} catch (InterruptedException | ParseException e) {
 				e.printStackTrace();
 			}
@@ -234,11 +217,14 @@ public class TaskReasoner extends ArbiAgent {
 		}
 	}
 
-	public boolean sendToTM(String data) {
-		System.out.println("send to tm : " + data);
+	public void sendToTM(String data) {
+//		System.out.println("send to tm : " + data);
 		this.send(agentURIPrefix + TASKMANAGER_ADDRESS, data);
-
-		return true;
+	}
+	
+	public void sendTaskRequest(String data) {
+//		System.out.println("what? : " + data);
+		this.send(agentURIPrefix + TASKMANAGER_ADDRESS, data.toString());
 	}
 	
 	public void sleep(int count) {

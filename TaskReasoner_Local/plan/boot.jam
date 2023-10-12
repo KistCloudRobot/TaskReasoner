@@ -8,7 +8,8 @@ GOALS :
 	maintain alive():UTILITY -10000;
 	perform boot();
 
-//FACTS :
+FACTS :
+	//FACT LOG();
 
 OBSERVER: {
 	FACT TaskReasoner($taskReasoner);

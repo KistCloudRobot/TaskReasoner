@@ -4,42 +4,51 @@ PREFIXES:
 PLAN CONCLUDE context($context){
 	ID: "http://www.arbi.com//BuiltInPlan#contextDefault"
 	PRECONDITION:
-		FACT GLUtility($glUtility);
+		FACT GLMessageManager($glUtility);
 	BODY:
+		PERFORM isro:startLog("CONCLUDE", "context - what?");
 		
 		System.out.println("no update : " + $context);
 		$glUtility.assertGL($context);
 		RETRACT context($context);
 		
-	UTILITY : 10;
+		PERFORM isro:endLog("CONCLUDE", "context - what");
+	EFFECTS :
+		RETRACT context($context);
+	UTILITY : 9999;
 }
 
 PLAN CONCLUDE context($context){
 	ID: "http://www.arbi.com//BuiltInPlan#contextrackAt"
 	PRECONDITION:
-		FACT GLUtility($glUtility);
+		FACT GLMessageManager($glUtility);
 		$glUtility.retrieveGLName($context) == "rackAt";
 	BODY:
-		
+		//PERFORM isro:startLog("CONCLUDE", "context - rackAt");
 		$rack = $glUtility.retrieveGLExpression($context, 0);
 		RETRACT rackAt($rack, $v1, $v2);
 		$glUtility.assertGL($context);
-		RETRACT context($contextName, $context);
-		
+		//PERFORM isro:endLog("CONCLUDE", "context - rackAt");
+	EFFECTS :
+		RETRACT context($context);
 	UTILITY : 10000;
 }
 
 PLAN CONCLUDE context($context){
 	ID: "http://www.arbi.com//BuiltInPlan#contextcargoAt"
 	PRECONDITION:
-		FACT GLUtility($glUtility);
+		FACT GLMessageManager($glUtility);
 		$glUtility.retrieveGLName($context) == "cargoAt";
 	BODY:
+		PERFORM isro:startLog("CONCLUDE", "context - cargoAt");
 		
 		$cargo = $glUtility.retrieveGLExpression($context, 0);
 		RETRACT cargoAt($cargo, $v1, $v2);
 		$glUtility.assertGL($context);
 		RETRACT context($context);
+		PERFORM isro:endLog("CONCLUDE", "context - cargoAt");
 		
+	EFFECTS :
+		RETRACT context($context);
 	UTILITY : 10000;
 }
