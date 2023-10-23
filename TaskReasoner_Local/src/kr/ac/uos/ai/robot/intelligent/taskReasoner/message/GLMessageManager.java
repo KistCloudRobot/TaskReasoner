@@ -4,7 +4,6 @@ package kr.ac.uos.ai.robot.intelligent.taskReasoner.message;
 import kr.ac.uos.ai.arbi.model.GLFactory;
 import kr.ac.uos.ai.arbi.model.GeneralizedList;
 import kr.ac.uos.ai.arbi.model.parser.ParseException;
-import kr.ac.uos.ai.robot.intelligent.taskReasoner.TaskReasonerDataSource;
 import kr.ac.uos.ai.arbi.model.Value;
 import kr.ac.uos.ai.arbi.ltm.DataSource;
 import kr.ac.uos.ai.arbi.model.Expression;
@@ -27,36 +26,46 @@ public class GLMessageManager {
 		ds.assertFact(gl);
 	}
 	
-	public void assertGL(GeneralizedList glContext) {
-		String glName;
-		
-		glName = glContext.getName();
-		if (glContext.getExpressionsSize() != 0) {
-				Object[] objectList = new Object[glContext.getExpressionsSize()];	
-				for (int i = 0; i < glContext.getExpressionsSize(); i ++) {
-				Expression o = glContext.getExpression(i);
-				if(o.isGeneralizedList() == true) {
-					String str = o.toString();
-					objectList[i] = str;
-				} else if(o.asValue().getType() == Value.Type.STRING){
-					String str =  removeQuotationMarks(o.toString());
-					objectList[i] = str;
-				} else if(o.asValue().getType() == Value.Type.FLOAT) {
-					Float f = Float.parseFloat(o.toString());
-					objectList[i] = f;
-				} else if(o.asValue().getType() == Value.Type.INT) {
-					int j = Integer.parseInt(o.toString());
-					objectList[i] = j;
+	public void assertGL(String input) {
+		String name = "";
+
+		if (input.startsWith("(")) {
+
+			try {
+				GeneralizedList gl = GLFactory.newGLFromGLString(input);
+				name = gl.getName();
+				Object[] expressionList = new Object[gl.getExpressionsSize()];
+
+				for (int i = 0; i < gl.getExpressionsSize(); i++) {
+					if (gl.getExpression(i).isGeneralizedList()) {
+						String glString = gl.getExpression(i).toString();
+						expressionList[i] = GLFactory.unescape(glString);
+					} else {
+						kr.ac.uos.ai.arbi.model.Value value = gl.getExpression(i).asValue();
+						if (value.getType() == kr.ac.uos.ai.arbi.model.Value.Type.FLOAT) {
+							expressionList[i] = value.floatValue();
+						} else if (value.getType() == kr.ac.uos.ai.arbi.model.Value.Type.INT) {
+							expressionList[i] = value.intValue();
+						} else if (value.getType() == kr.ac.uos.ai.arbi.model.Value.Type.STRING) {
+							String glString = value.stringValue();
+							expressionList[i] = GLFactory.unescape(glString);
+						} else {
+							String glString = value.stringValue();
+							expressionList[i] = GLFactory.unescape(glString);
+						}
+					}
+
 				}
+
+				assertFact(name, expressionList);
+
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-			interpreter.getWorldModel().assertFact(glName, objectList);
-			//System.out.println("Assert context : " + glName);
-		}else {
-			interpreter.getWorldModel().assertFact(glName);
-			//System.out.println("Assert context : " + glName);
 		}
 	}
-	
+
 	public void assertFact(String name, Object... args) {
 		
 		interpreter.getWorldModel().assertFact(name, args);
@@ -164,6 +173,47 @@ public class GLMessageManager {
 		
 		return null;
 		
+	}
+	
+	public String retrieveGLName(String glString) {
+		String result = "";
+		try {
+			GeneralizedList gl = GLFactory.newGLFromGLString(glString);
+			result = gl.getName();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		
+		return result;
+	}
+	
+	
+	public String retrieveGLExpression(String input, int i) {
+		String result = "";
+		
+		//System.out.println("why? : " + input);
+		if (input.startsWith("\"")) {
+			input = removeQuotationMarks(input);
+		}
+		try {
+			GeneralizedList gl = GLFactory.newGLFromGLString(input);
+
+			if(gl.getExpression(i).isValue()) {
+
+				result = gl.getExpression(i).asValue().stringValue();
+			} else if (gl.getExpression(i).isGeneralizedList()) {
+				result = gl.getExpression(i).asGeneralizedList().toString();
+			}
+				
+
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		//result = this.removeQuotationMarks(result);
+		return result;
 	}
 }
 

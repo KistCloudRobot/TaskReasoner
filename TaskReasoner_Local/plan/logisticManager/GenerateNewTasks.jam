@@ -29,10 +29,10 @@ PLAN PERFORM GenerateIsaacStoringTasks() {
 		PERFORM isro:startLog("PERFORM", "GenerateIsaacStoringTasks");
 
 		PERFORM CheckStationStatus("http://www.arbi.com/ontologies/arbi.owl#station1001", 1001, $status1);
-		PERFORM CheckStationStatus("http://www.arbi.com/ontologies/arbi.owl#station1002", 1002, $status2);
-		PERFORM CheckStationStatus("http://www.arbi.com/ontologies/arbi.owl#station1003", 1003, $status3);
+		//PERFORM CheckStationStatus("http://www.arbi.com/ontologies/arbi.owl#station1002", 1002, $status2);
+		//PERFORM CheckStationStatus("http://www.arbi.com/ontologies/arbi.owl#station1003", 1003, $status3);
 		
-		$data = $generator.generateIsaacStoringTasks($status1, $status2, $status3);
+		$data = $generator.generateIsaacStoringTasks($status1);
 		
 		$taskReasoner.sendTaskRequest($data);
 		
@@ -49,11 +49,11 @@ PLAN PERFORM GenerateIsaacUnstoringTasks() {
 	BODY:
 		PERFORM isro:startLog("PERFORM", "GenerateIsaacUnstoringTasks");
 
-		PERFORM CheckStationStatus("http://www.arbi.com/ontologies/arbi.owl#station1002", 1002, $status2);
-		PERFORM CheckStationStatus("http://www.arbi.com/ontologies/arbi.owl#station1003", 1003, $status3);
+		//PERFORM CheckStationStatus("http://www.arbi.com/ontologies/arbi.owl#station1002", 1002, $status2);
+		//PERFORM CheckStationStatus("http://www.arbi.com/ontologies/arbi.owl#station1003", 1003, $status3);
 		PERFORM CheckStationStatus("http://www.arbi.com/ontologies/arbi.owl#station1004", 1004, $status4);
 		
-		$data = $generator.generateIsaacUnstoringTasks($status2, $status3, $status4);
+		$data = $generator.generateIsaacUnstoringTasks($status4);
 		
 		$taskReasoner.sendTaskRequest($data);
 		

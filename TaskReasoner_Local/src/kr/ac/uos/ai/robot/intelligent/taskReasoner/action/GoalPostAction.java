@@ -16,7 +16,7 @@ public class GoalPostAction implements ActionBody {
 	@Override
 	public Object execute(Object o) {
 		GoalPostArgument argument = (GoalPostArgument)o;
-		reasoner.sendToTM("PostGoal", argument.toGenerallizedList());
+//		reasoner.sendToTM("PostGoal", argument.toGenerallizedList());
 		
 		return null;
 	}

@@ -17,7 +17,7 @@ public class GoalUnpostAction implements ActionBody{
 	public Object execute(Object o) {
 		GoalPostArgument argument = (GoalPostArgument) o;
 		
-		reasoner.sendToTM("unpostGoal", argument.getGoalName());
+//		reasoner.sendToTM("unpostGoal", argument.getGoalName());
 		// TODO Auto-generated method stub
 		return null;
 	}

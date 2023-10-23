@@ -44,7 +44,7 @@ public class TaskGenerator {
 		return builder.toString();
 	}
 	
-	public String generateIsaacStoringTasks(String station1, String station2, String station3) {
+	public String generateIsaacStoringTasks(String station1) {
 		StringBuilder builder = new StringBuilder();
 		
 		builder.append("(TaskRequest (PersonCall \"");
@@ -56,20 +56,12 @@ public class TaskGenerator {
 		} else if (station1.equals("using")) {
 			System.out.println("station1 is still using");
 		}
-		
-		if (station2.equals("using") || station3.equals("using")) {
-			System.out.println("station2 is still using");
-		} else if (station2.equals("empty")) {
-			builder.append("(command \"http://www.arbi.com/ontologies/arbi.owl#station1002\" \"PrepareStoring\")");
-		} else if (station2.equals("exist")) {
-			builder.append("(command \"http://www.arbi.com/ontologies/arbi.owl#station1002\" \"Storing\")");
-		}
-				
+
 		builder.append(")))");
 		return builder.toString();
 	}
 
-	public String generateIsaacUnstoringTasks(String station2, String station3, String station4) {
+	public String generateIsaacUnstoringTasks(String station4) {
 		StringBuilder builder = new StringBuilder();
 		
 		builder.append("(TaskRequest (PersonCall \"");
@@ -82,13 +74,7 @@ public class TaskGenerator {
 			System.out.println("station1 is still using");
 		}
 		
-		if (station2.equals("using") || station3.equals("using")) {
-			System.out.println("station1003 is still using");
-		} else if (station2.equals("empty")) {
-			builder.append("(command \"http://www.arbi.com/ontologies/arbi.owl#station1003\" \"PrepareUnstoring\")");
-		} else if (station2.equals("exist")) {
-			builder.append("(command \"http://www.arbi.com/ontologies/arbi.owl#station1002\" \"Unstoring\")");
-		}
+
 				
 		builder.append(")))");
 		return builder.toString();
