@@ -26,6 +26,9 @@ PLAN CONCLUDE context($context){
 	BODY:
 		//PERFORM isro:startLog("CONCLUDE", "context - rackAt");
 		$rack = $glUtility.retrieveGLExpression($context, 0);
+		
+		PERFORM isro:argumentLog("$rackAt", $context);
+		
 		RETRACT rackAt($rack, $v1, $v2);
 		$glUtility.assertGL($context);
 		//PERFORM isro:endLog("CONCLUDE", "context - rackAt");

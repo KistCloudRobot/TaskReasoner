@@ -20,6 +20,62 @@ PLAN PERFORM GenerateNewTasks() {
 	UTILITY: 10; 
 }
 
+PLAN PERFORM GenerateIsaacTasks() {
+	ID: "http://www.arbi.com//GenerateIsaacTasksForTTA"
+	PRECONDITION:
+		FACT TaskGenerator($generator);
+		FACT TaskReasoner($taskReasoner);
+	BODY:
+		PERFORM isro:startLog("PERFORM", "GenerateIsaacTasks");
+
+		PERFORM CheckStationStatus("http://www.arbi.com/ontologies/arbi.owl#station1001", 1001, $status1);
+		PERFORM CheckStationStatus("http://www.arbi.com/ontologies/arbi.owl#station1002", 1002, $status2);
+		PERFORM CheckStationStatus("http://www.arbi.com/ontologies/arbi.owl#station1003", 1003, $status3);
+		PERFORM CheckStationStatus("http://www.arbi.com/ontologies/arbi.owl#station1004", 1004, $status4);
+		$data = $generator.generateIsaacTasks($status1,$status2,$status3,$status4);
+		
+		$taskReasoner.sendTaskRequest($data);
+		
+		PERFORM isro:endLog("PERFORM", "GenerateIsaacTasks");
+	UTILITY: 9; 
+}
+
+PLAN PERFORM GenerateIsaacTasks() {
+	ID: "http://www.arbi.com//GenerateIsaacTasks"
+	PRECONDITION:
+		FACT AutoTest();
+		FACT TaskGenerator($generator);
+		FACT TaskReasoner($taskReasoner);
+	BODY:
+		PERFORM isro:startLog("PERFORM", "GenerateIsaacTasks");
+
+		$taskReasoner.sleep(25000);
+		PERFORM CheckStationStatus("http://www.arbi.com/ontologies/arbi.owl#station1001", 1001, $status1);
+		PERFORM CheckStationStatus("http://www.arbi.com/ontologies/arbi.owl#station1002", 1002, $status2);
+		PERFORM CheckStationStatus("http://www.arbi.com/ontologies/arbi.owl#station1003", 1003, $status3);
+		PERFORM CheckStationStatus("http://www.arbi.com/ontologies/arbi.owl#station1004", 1004, $status4);
+		$data = $generator.generateIsaacTasks($status1,$status2,$status3,$status4);
+		
+		$taskReasoner.sendTaskRequest($data);
+		
+		PERFORM isro:endLog("PERFORM", "GenerateIsaacTasks");
+	UTILITY: 10; 
+}
+
+
+PLAN PERFORM GenerateIsaacTasks() {
+	ID: "http://www.arbi.com//GenerateIsaacTasksFailed"
+	PRECONDITION:
+		FACT CompletedTaskCount($v);
+	BODY:
+		PERFORM isro:startLog("PERFORM", "GenerateIsaacTasks - failed");
+		
+		System.out.println("GenerateIsaacTask? : " + $v);
+		PERFORM isro:endLog("PERFORM", "GenerateIsaacTasks - failed");
+	UTILITY: -1; 
+}
+
+
 PLAN PERFORM GenerateIsaacStoringTasks() {
 	ID: "http://www.arbi.com//GenerateIsaacStoringTasks"
 	PRECONDITION:
@@ -29,8 +85,6 @@ PLAN PERFORM GenerateIsaacStoringTasks() {
 		PERFORM isro:startLog("PERFORM", "GenerateIsaacStoringTasks");
 
 		PERFORM CheckStationStatus("http://www.arbi.com/ontologies/arbi.owl#station1001", 1001, $status1);
-		//PERFORM CheckStationStatus("http://www.arbi.com/ontologies/arbi.owl#station1002", 1002, $status2);
-		//PERFORM CheckStationStatus("http://www.arbi.com/ontologies/arbi.owl#station1003", 1003, $status3);
 		
 		$data = $generator.generateIsaacStoringTasks($status1);
 		
@@ -49,8 +103,6 @@ PLAN PERFORM GenerateIsaacUnstoringTasks() {
 	BODY:
 		PERFORM isro:startLog("PERFORM", "GenerateIsaacUnstoringTasks");
 
-		//PERFORM CheckStationStatus("http://www.arbi.com/ontologies/arbi.owl#station1002", 1002, $status2);
-		//PERFORM CheckStationStatus("http://www.arbi.com/ontologies/arbi.owl#station1003", 1003, $status3);
 		PERFORM CheckStationStatus("http://www.arbi.com/ontologies/arbi.owl#station1004", 1004, $status4);
 		
 		$data = $generator.generateIsaacUnstoringTasks($status4);

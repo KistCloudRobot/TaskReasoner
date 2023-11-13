@@ -15,3 +15,21 @@ PLAN CONCLUDE TaskCompleted($env, $goalID, $robotID) {
 	UTILITY: 10; 
 }
 
+
+PLAN CONCLUDE TaskCompleted($env, $goalID, $robotID) {
+	ID: "http://www.arbi.com//TaskCompletedSimulation"
+	PRECONDITION :
+		$env == "simulation";
+	BODY:
+		PERFORM isro:startLog("CONCLUDE", "TaskCompleted");
+		RETRACT OccupiedStation($goalID, $location);
+		RETRIEVE CompletedTaskCount($v);
+		$v1 = $v + 1;
+		UPDATE (CompletedTaskCount($v)) (CompletedTaskCount($v1));
+		
+		PERFORM isro:endLog("CONCLUDE", "TaskCompleted");
+	EFFECTS :
+		RETRACT TaskCompleted($env, $goalID, $robotID);
+	UTILITY: 10000; 
+}
+

@@ -10,6 +10,8 @@ GOALS :
 
 FACTS :
 	//FACT LOG();
+	FACT CompletedTaskCount(0);
+	//FACT AutoTest;
 
 OBSERVER: {
 	FACT TaskReasoner($taskReasoner);

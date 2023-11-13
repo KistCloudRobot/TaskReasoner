@@ -1,0 +1,16 @@
+PREFIXES:
+		PREFIX isro: <http://www.arbi.com//BuiltInPlan#>;
+
+
+PLAN CONCLUDE CompletedTaskCount($count) {
+	ID: "http://www.arbi.com//CompletedTaskCount5"
+	PRECONDITION :
+		$count == 5;
+	BODY:
+		PERFORM isro:startLog("CONCLUDE", "CompletedTaskCount 5");
+	
+		//PERFORM GenerateIsaacTasks();			
+		//UPDATE (CompletedTaskCount($count)) (CompletedTaskCount(0));
+		PERFORM isro:endLog("CONCLUDE", "CompletedTaskCount 5");
+	UTILITY: 100; 
+}

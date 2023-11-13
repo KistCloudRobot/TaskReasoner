@@ -7,7 +7,7 @@ import kr.ac.uos.ai.arbi.ltm.DataSource;
 
 public class CMTest extends ArbiAgent {
 	private static final String brokerURI 				= "127.0.0.1";
-	private static final int		brokerPORT 				= 61316;
+	private static final int		brokerPORT 				= 61314;
 	private static final String	agentURIPrefix			= "agent://";
 	private static final String	dsURIPrefix				= "ds://";
 	private static final String TR_URI					= "agent://www.arbi.com/TaskReasoner";
@@ -36,19 +36,32 @@ public class CMTest extends ArbiAgent {
 		
 
 		System.out.println("CMTest start");
-		dataSource.assertFact("(context (rackAt \"rack01\" 1 1))");
+		dataSource.assertFact("(context (rackAt \"rack01\" 1001 1001))");
 		Thread.sleep(1000);
-		dataSource.assertFact("(context (rackAt \"rack04\" 4 4))");
+		dataSource.assertFact("(context (rackAt \"rack02\" 1002 1002))");
 		Thread.sleep(1000);
-		cm.send(TR_URI, "(receivedCargo \"http://www.arbi.com/ontologies/arbi.owl#bin_01\" \"http://www.arbi.com/ontologies/arbi.owl#station1\" \"agent://www.mcarbi.com/SemanticMapManager1\")");
+		dataSource.assertFact("(context (rackAt \"rack04\" 1004 1004))");
+		Thread.sleep(1000);
+		cm.send("agent://www.arbi.com/TaskReasoner", "(TaskCompleted \"simulation\" \"1\" \"1\")");
 		Thread.sleep(2000);
-		cm.send(TR_URI, "(TaskCreated \"test1\" \"111\" \"http://www.arbi.com/ontologies/arbi.owl#station1\" \"agent://www.mcarbi.com/SemanticMapManager1\")");
+		cm.send("agent://www.arbi.com/TaskReasoner", "(TaskCompleted \"simulation\" \"2\" \"1\")");
 		Thread.sleep(2000);
-		cm.send(TR_URI, "(receivedCargo \"http://www.arbi.com/ontologies/arbi.owl#bin_01\" \"http://www.arbi.com/ontologies/arbi.owl#station2\" \"agent://www.mcarbi.com/SemanticMapManager1\")");
+		cm.send("agent://www.arbi.com/TaskReasoner", "(TaskCompleted \"simulation\" \"3\" \"1\")");
 		Thread.sleep(2000);
-		cm.send(TR_URI, "(TaskCompleted \"test1\" \"111\" \"http://www.arbi.com/ontologies/arbi.owl#station1\")");
+		cm.send("agent://www.arbi.com/TaskReasoner", "(TaskCompleted \"simulation\" \"4\" \"1\")");
 		Thread.sleep(2000);
-		cm.send(TR_URI, "(receivedCargo \"http://www.arbi.com/ontologies/arbi.owl#bin_01\" \"http://www.arbi.com/ontologies/arbi.owl#station2\" \"agent://www.mcarbi.com/SemanticMapManager1\")");
+		cm.send("agent://www.arbi.com/TaskReasoner", "(TaskCompleted \"simulation\" \"5\" \"1\")");
+		Thread.sleep(2000);
+		
+//		cm.send(TR_URI, "(receivedCargo \"http://www.arbi.com/ontologies/arbi.owl#bin_01\" \"http://www.arbi.com/ontologies/arbi.owl#station1\" \"agent://www.mcarbi.com/SemanticMapManager1\")");
+//		Thread.sleep(2000);
+//		cm.send(TR_URI, "(TaskCreated \"test1\" \"111\" \"http://www.arbi.com/ontologies/arbi.owl#station1\" \"agent://www.mcarbi.com/SemanticMapManager1\")");
+//		Thread.sleep(2000);
+//		cm.send(TR_URI, "(receivedCargo \"http://www.arbi.com/ontologies/arbi.owl#bin_01\" \"http://www.arbi.com/ontologies/arbi.owl#station2\" \"agent://www.mcarbi.com/SemanticMapManager1\")");
+//		Thread.sleep(2000);
+//		cm.send(TR_URI, "(TaskCompleted \"test1\" \"111\" \"http://www.arbi.com/ontologies/arbi.owl#station1\")");
+//		Thread.sleep(2000);
+//		cm.send(TR_URI, "(receivedCargo \"http://www.arbi.com/ontologies/arbi.owl#bin_01\" \"http://www.arbi.com/ontologies/arbi.owl#station2\" \"agent://www.mcarbi.com/SemanticMapManager1\")");
 		/*
 		cm.send(TR_URI, "(StudyMethod \"audio\")");
 		Thread.sleep(1000);

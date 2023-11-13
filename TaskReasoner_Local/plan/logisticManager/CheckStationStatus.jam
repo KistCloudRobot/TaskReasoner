@@ -18,6 +18,7 @@ PLAN PERFORM CheckStationStatus($station, $stationVertex, $status) {
 	BODY:
 		PERFORM isro:startLog("PERFORM", "CheckStationStatus - exist");
 
+		PERFORM isro:argumentLog("$rackID", $rackID);
 		$status = "exist";
 				
 		PERFORM isro:endLog("PERFORM", "CheckStationStatus");
@@ -30,6 +31,7 @@ PLAN PERFORM CheckStationStatus($station, $stationVertex, $status) {
 	BODY:
 		PERFORM isro:startLog("PERFORM", "CheckStationStatus - empty");
 
+		PERFORM isro:argumentLog("$stationVertex", $stationVertex);
 		$status = "empty";
 				
 		PERFORM isro:endLog("PERFORM", "CheckStationStatus");

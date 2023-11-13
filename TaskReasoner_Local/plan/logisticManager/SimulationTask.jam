@@ -1,0 +1,15 @@
+PREFIXES:
+		PREFIX isro: <http://www.arbi.com//BuiltInPlan#>;
+
+PLAN CONCLUDE SimulationTask() {
+	ID: "http://www.arbi.com//SimulationTask"
+	PRECONDITION :
+	BODY:
+		PERFORM isro:startLog("CONCLUDE", "SimulationTask");
+		
+		POST PERFORM GenerateIsaacTasks();
+		PERFORM isro:endLog("CONCLUDE", "SimulationTask");
+	EFFECTS :
+		RETRACT SimulationTask();
+	UTILITY: 10; 
+}
